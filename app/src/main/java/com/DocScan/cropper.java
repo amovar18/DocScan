@@ -1,5 +1,6 @@
 package com.DocScan;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.webkit.WebStorage;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +26,13 @@ import com.DocScan.base.DocumentScanActivity;
 import com.DocScan.helpers.ImageUtils;
 import com.DocScan.helpers.ScannerConstants;
 import com.DocScan.libraries.PolygonView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -41,12 +50,34 @@ public class cropper extends DocumentScanActivity {
     private TextView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original;
     private  PolygonView polygonView;
     private Button crop,done,extract;
+    private BottomSheetBehavior sheetBehavior;
+    private LinearLayout bottom_sheet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cropper);
         cropImage=ScannerConstants.selectedImageBitmap;
         originalImage=ScannerConstants.selectedImageBitmap;
+        bottom_sheet = findViewById(R.id.bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
         isInverted=false;
         if (ScannerConstants.selectedImageBitmap != null)
             init();
@@ -111,7 +142,27 @@ public class cropper extends DocumentScanActivity {
     private View.OnClickListener extractTextFromImage=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(cropImage);
+            FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance()
+                    .getOnDeviceTextRecognizer();
+            textRecognizer.processImage(image)
+                    .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                        @Override
+                        public void onSuccess(FirebaseVisionText result) {
+                            bottomsheetfragment bottom = new bottomsheetfragment();
+                            Bundle bundle=new Bundle();
+                            bundle.putString("extracted_text",result.getText());
+                            bottom.setArguments(bundle);
+                            bottom.show(getSupportFragmentManager(), bottom.getTag());
+                        }
+                    })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(cropper.this, "Could not extract text !!!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
         }
     };
 
@@ -247,5 +298,7 @@ public class cropper extends DocumentScanActivity {
             cropImage = cropImage.copy(cropImage.getConfig(), true);
         }
         isInverted = !isInverted;
-    }
+    }// click event for show-dismiss bottom sheet
+
+
 }
