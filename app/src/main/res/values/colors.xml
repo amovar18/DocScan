@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <!--dark theme -->
+    <color name="colorPrimary">#455A64</color>
+    <color name="primaryBackground">#263238</color>
+    <color name="colorPrimaryDark">#42A5F5</color>
+    <!--light theme -->
+    <color name="colorAccent">#1DE9B6</color>
+
+    <color name="colorGrey">#cccccc</color>
+    <color name="blue">#ff59a9ff</color>
+    <color name="orange">#ffff900d</color>
+    <color name="bottom_background_color">#ffc4c2bc</color>
+    <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
+    <color name="polygonViewCircleBackground">#90e5f8ff</color>
 </resources>

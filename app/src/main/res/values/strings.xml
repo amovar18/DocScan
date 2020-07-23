@@ -4,4 +4,14 @@
     <string name="delete">Delete</string>
     <string name="share_as_pdf">Share as PDF</string>
     <string name="open_pdf">Open PDF</string>
+    <!--cropper names -->
+    <string name="original_image">Original</string>
+    <string name="realign">Re-Align</string>
+    <string name="black_and_white">B &amp; W</string>
+    <string name="monochrome">Monochrome</string>
+    <string name="rotate">Rotate</string>
+    <string name="recognized_text">Recognized Text:</string>
+    <string name="done">Done</string>
+    <string name="extract_text">Extract Text</string>
+    <string name="crop">Crop</string>
 </resources>

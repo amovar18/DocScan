@@ -1,4 +1,3 @@
 include ':openCVLibrary'
-include ':documentscanner'
 include ':app'
 rootProject.name = "DocScan"
