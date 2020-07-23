@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">DocScan</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="share_as_pdf">Share as PDF</string>
+    <string name="open_pdf">Open PDF</string>
 </resources>
