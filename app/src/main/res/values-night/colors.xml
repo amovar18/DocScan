@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="actionBar">#455A64</color>
+    <color name="backgroundColor">#1f1f1b</color>
+    <color name="ButtonColor">#1DE9B6</color>
+    <color name="cardviewBackgroundcolor">#1f1f1b</color>
+    <color name="textcolor">#ffffff</color>
+    <color name="save_pdf_color">#ECEFF1</color>
+    <color name="save_pdf_color_text">#000000</color>
+</resources>

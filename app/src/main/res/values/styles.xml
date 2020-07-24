@@ -6,27 +6,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccentPrimary</item>
     </style>
-    <style name="splashScreentheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="splashScreentheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name = "android:windowActionBar">false</item>
         <item name = "android:windowNoTitle">true</item>
-    </style>
-    <style name="DarkAppTheme" parent="AppTheme">
-        <item name="actionBar">#455A64</item>
-        <item name="cardviewBackgroundcolor">#1f4068</item>
-        <item name="ButtonColor">#1DE9B6</item>
-        <item name="backgroundColor">#1b1b2f</item>
-        <item name="textcolor">#ffffff</item>
-        <item name="save_pdf_color">#ECEFF1</item>
-        <item name="save_pdf_color_text">#000000</item>
-    </style>
-    <style name="LightAppTheme" parent="splashScreentheme">
-        <item name="save_pdf_color">#777777</item>
-        <item name="save_pdf_color_text">#ffffff</item>
-        <item name="actionBar">#03A9F4</item>
-        <item name="backgroundColor">#ffffff</item>
-        <item name="cardviewBackgroundcolor">#ECEFF1</item>
-        <item name="ButtonColor">#03A9F4</item>
-        <item name="textcolor">#000000</item>
     </style>
 
 </resources>

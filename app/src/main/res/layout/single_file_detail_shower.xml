@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:background="?attr/backgroundColor"
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="9dp"
+    app:cardBackgroundColor="@color/cardviewBackgroundcolor"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <androidx.cardview.widget.CardView
-        android:layout_margin="10dp"
-        app:cardCornerRadius="9dp"
-        app:cardBackgroundColor="?attr/cardviewBackgroundcolor"
+    android:layout_height="wrap_content"
+    android:id="@+id/file_detail">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/file_detail">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_alignParentStart="true"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/thumbnail"/>
-            <TextView
-                android:textColor="?attr/textcolor"
-                android:fontFamily="@font/amaranth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/filename"/>
-            <ImageView
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/menu_for_file"/>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_alignParentStart="true"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/thumbnail"/>
+        <TextView
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/thumbnail"
+            android:textColor="@color/textcolor"
+            android:fontFamily="@font/amaranth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filename"/>
+        <ImageView
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/menu_for_file"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

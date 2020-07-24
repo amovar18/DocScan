@@ -2,7 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="?attr/backgroundColor"
+    android:background="@color/backgroundColor"
     android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -115,8 +115,8 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center">
                 <Button
-                    android:textColor="?attr/textcolor"
-                    android:background="?attr/ButtonColor"
+                    android:textColor="@color/textcolor"
+                    android:background="@color/ButtonColor"
                     android:layout_toEndOf="@id/btnScanText"
                     android:id="@+id/btnImageCrop"
                     android:layout_width="wrap_content"
@@ -124,8 +124,8 @@
                     android:layout_alignParentEnd="true"
                     android:text="@string/crop"/>
                 <Button
-                    android:textColor="?attr/textcolor"
-                    android:background="?attr/ButtonColor"
+                    android:textColor="@color/textcolor"
+                    android:background="@color/ButtonColor"
                     android:layout_toStartOf="@id/btnScanText"
                     android:id="@+id/btnDone"
                     android:layout_width="wrap_content"
@@ -135,8 +135,8 @@
                 <Button
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
-                    android:textColor="?attr/ButtonColor"
-                    android:background="?attr/textcolor"
+                    android:textColor="@color/textcolor"
+                    android:background="@color/ButtonColor"
                     android:id="@+id/btnScanText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

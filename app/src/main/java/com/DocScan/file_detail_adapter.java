@@ -1,26 +1,13 @@
 package com.DocScan;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfRenderer;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,10 +16,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapter.fileViewHolder> {
     private ArrayList<String> dataset;
@@ -78,8 +75,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
     public fileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.single_file_detail_shower, parent, false);
-        fileViewHolder fvh = new fileViewHolder(v);
-        return fvh;
+        return new fileViewHolder(v);
     }
 
     @Override
@@ -87,11 +83,11 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         holder.filename_textview.setText(dataset.get(position));
         if (dataset.get(position).contains(".")){
             try {
-                ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
+                ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan/" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
                 PdfRenderer renderer = new PdfRenderer(parcelFileDescriptor);
                 Bitmap bitmap;
                 PdfRenderer.Page page = renderer.openPage(0);
-                bitmap=Bitmap.createBitmap(page.getWidth(),page.getHeight(), Bitmap.Config.RGB_565);
+                bitmap=Bitmap.createBitmap(page.getWidth(),page.getHeight(), Bitmap.Config.ARGB_8888);
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                 page.close();
                 holder.filethumbnail_imageview.setImageBitmap(bitmap);
@@ -102,6 +98,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         }else{
             File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
             File[] temp_files=file.listFiles();
+            assert temp_files != null;
             Bitmap bitmap= BitmapFactory.decodeFile(temp_files[0].getAbsolutePath());
             holder.filethumbnail_imageview.setImageBitmap(bitmap);
         }
@@ -177,6 +174,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                             return false;
                         }
                     });
+                    popupMenu.show();
                 }
             }
         });
@@ -185,6 +183,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
+        System.out.println(dataset.size());
         return dataset.size();
     }
     public void edit(int position) {

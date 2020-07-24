@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/backgroundColor"
+    android:background="@color/backgroundColor"
     tools:context=".MainActivity">
     <include android:id="@+id/toolbar_layout"
         layout="@layout/toolbar"/>
@@ -19,7 +19,7 @@
         android:src="@drawable/ic_camera"
         android:id="@+id/start_capturing"
         android:layout_margin="10dp"
-        android:backgroundTint="?attr/ButtonColor"
+        android:backgroundTint="#03A9F4"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"/>
 </RelativeLayout>

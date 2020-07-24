@@ -16,27 +16,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:textColor="?attr/textcolor"
-            android:textSize="18dp"
+            android:textColor="@color/textcolor"
+            android:textSize="18sp"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filename"/>
         <EditText
-            android:textColorHint="?attr/textcolor"
-            android:textColor="?attr/textcolor"
+            android:inputType="text"
+            android:hint="@string/enter_filename"
+            android:textColorHint="@color/textcolor"
+            android:textColor="@color/textcolor"
             android:id="@+id/filename_to_be_set"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
             android:padding="10dp"
             android:minWidth="200dp"
-            android:hint="@string/enter_filename"
+            android:maxWidth="200dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
-            android:background="?attr/save_pdf_color"
-            android:textColor="?attr/save_pdf_color_text"
+            android:background="@color/save_pdf_color"
+            android:textColor="@color/save_pdf_color_text"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
             android:textSize="20sp"
@@ -62,6 +64,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/add_more_images"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="#42A5F5"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_add"/>
 </RelativeLayout>
