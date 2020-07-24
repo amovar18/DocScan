@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    File app_specific_files,document_files;
     Toolbar toolbar;
     RecyclerView.Adapter adapter;
     ArrayList<String> fileset=new ArrayList<>();
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar=findViewById(R.id.toolbar);
         recyclerView=findViewById(R.id.files_details_holder);
-        File app_specific_files=new File(getExternalFilesDir(null)+"/Pictures");
+        app_specific_files=new File(getExternalFilesDir(null)+"/Pictures");
         if(!app_specific_files.exists()){
             app_specific_files.mkdirs();
         }else{
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 fileset.add(listing.getName());
             }
         }
-        File document_files=new File(Environment.getExternalStorageDirectory()+"/DocScan");
+        document_files=new File(Environment.getExternalStorageDirectory()+"/DocScan");
         if(!document_files.exists()){
             document_files.mkdirs();
         }else {
@@ -41,5 +42,20 @@ public class MainActivity extends AppCompatActivity {
         }
         adapter=new file_detail_adapter(fileset,getApplicationContext());
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fileset.clear();
+        File[] temp_files=app_specific_files.listFiles();
+        for(File listing:temp_files){
+            fileset.add(listing.getName());
+        }
+        File[] allfiles = document_files.listFiles();
+        for (File temp_file : allfiles) {
+            fileset.add(temp_file.getName());
+        }
+        adapter.notifyDataSetChanged();
     }
 }

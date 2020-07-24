@@ -1,35 +1,18 @@
 package com.DocScan;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.pdf.PdfRenderer;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class captured_image_adapter extends RecyclerView.Adapter<captured_image_adapter.imageViewHolder> {
     private ArrayList<String> dataset;

@@ -43,7 +43,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -181,7 +180,6 @@ public class image_capture extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(image_capture.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
             createCameraPreview();
         }
     };
@@ -291,7 +289,6 @@ public class image_capture extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(image_capture.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
@@ -452,11 +449,11 @@ public class image_capture extends AppCompatActivity {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
         String folder_name = simpleDateFormat.format(c);
-        final File file = new File(getExternalFilesDir(null) + "/" + folder_name);
+        final File file = new File(getExternalFilesDir(null) + "/Pictures/" + folder_name);
         if (!file.exists()) {
             file.mkdirs();
         }
-        data.setImage_Path(file.getAbsolutePath());
+        data.setImage_Path(file.getAbsolutePath(),folder_name);
     }
 
     public void rotateImage(byte[] data, String filename) {

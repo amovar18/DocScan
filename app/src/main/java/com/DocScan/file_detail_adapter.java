@@ -184,10 +184,10 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
         String folder_name = simpleDateFormat.format(c);
-        final File file = new File(context.getExternalFilesDir(null) + "/" + folder_name);
+        final File file = new File(context.getExternalFilesDir(null) + "/Pictures/" + folder_name);
         if (!file.exists()) {
             file.mkdirs();
         }
-        object.setImage_Path(file.getAbsolutePath());
+        object.setImage_Path(file.getAbsolutePath(),folder_name);
     }
 }

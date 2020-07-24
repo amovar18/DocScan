@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filename"/>
         <EditText
+            android:id="@+id/filename_to_be_set"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
             android:padding="10dp"
@@ -39,4 +40,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/image_displayer"/>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/progress_circular"
+        android:layout_gravity="center"/>
 </LinearLayout>
