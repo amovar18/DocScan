@@ -1,24 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView android:layout_margin="10dp"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/single_image_holder_cardview"
-    app:cardBackgroundColor="?attr/cardviewBackgroundcolor"
-    android:layout_width="wrap_content"
-    android:layout_height="150dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/single_image"/>
-        <ImageView
-            android:layout_below="@id/single_image"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete"
-            android:id="@+id/delete_single_image"/>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="9dp"
+        android:id="@+id/single_image_holder_cardview"
+        app:cardBackgroundColor="?attr/cardviewBackgroundcolor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+            <ImageView
+                android:layout_above="@id/delete_single_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/single_image"/>
+            <ImageView
+                android:layout_marginTop="5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:id="@+id/delete_single_image"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

@@ -6,7 +6,7 @@
     android:background="?attr/backgroundColor"
     android:orientation="vertical"
     android:padding="16dp"
-    app:behavior_hideable="false"
+    app:behavior_hideable="true"
     app:behavior_peekHeight="90dp"
     android:id="@+id/bottom_sheet"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">

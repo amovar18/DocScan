@@ -60,11 +60,6 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
     public void onBindViewHolder(@NonNull imageViewHolder holder, int position) {
         Bitmap display_bitmap= BitmapFactory.decodeFile(object.getImage_path()+"/"+object.getFilename(position));
         holder.main_ImageView.setImageBitmap(display_bitmap);
-        DisplayMetrics displayMetrics=new DisplayMetrics();
-        ((captured_image_display) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width=displayMetrics.widthPixels;
-        width=(width/2)-10;
-        holder.main_ImageView.setMaxWidth(width);
         holder.delete_imageview.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

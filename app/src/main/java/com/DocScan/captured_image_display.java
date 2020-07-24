@@ -1,8 +1,10 @@
 package com.DocScan;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -21,13 +23,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import androidx.appcompat.widget.Toolbar;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class captured_image_display extends AppCompatActivity {
+    FloatingActionButton floatingActionButton;
     datastore ds=new datastore();
     RecyclerView recyclerView;
     Toolbar toolbar;
@@ -44,13 +48,45 @@ public class captured_image_display extends AppCompatActivity {
         recyclerView=findViewById(R.id.image_displayer);
         adapter=new captured_image_adapter(dataSet,captured_image_display.this);
         recyclerView.setAdapter(adapter);
+        ItemTouchHelper ith = new ItemTouchHelper(itemCallback);
+        ith.attachToRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         toolbar=findViewById(R.id.toolbar);
+        floatingActionButton=findViewById(R.id.add_more_images);
         start_saving=findViewById(R.id.save_pdf_action);
         start_saving.setOnClickListener(save_pdf);
         filename.setText(ds.getFolder());
         progressBar=findViewById(R.id.progress_circular);
+        floatingActionButton.bringToFront();
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(captured_image_display.this,image_capture.class);
+                startActivity(intent);
+            }
+        });
     }
+
+    ItemTouchHelper.Callback itemCallback = new ItemTouchHelper.Callback() {
+        public boolean onMove(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            // get the viewHolder's and target's positions in your adapter data, swap them
+            Collections.swap(dataSet, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            // and notify the adapter that its dataset has changed
+            adapter.notifyDataSetChanged();
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        }
+
+        //defines the enabled move directions in each state (idle, swiping, dragging).
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                    ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+        }
+    };
     private View.OnClickListener save_pdf=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -112,4 +148,10 @@ public class captured_image_display extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        floatingActionButton.bringToFront();
+    }
 }

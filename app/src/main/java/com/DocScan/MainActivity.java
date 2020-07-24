@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar=findViewById(R.id.toolbar);
         ds.clear_all_data();
         floatingActionButton=findViewById(R.id.start_capturing);
+        floatingActionButton.bringToFront();
         recyclerView=findViewById(R.id.files_details_holder);
         app_specific_files=new File(getExternalFilesDir(null)+"/Pictures/");
         if(!app_specific_files.exists()){
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        floatingActionButton.bringToFront();
         fileset.clear();
         File[] temp_files=app_specific_files.listFiles();
         if(temp_files!=null) {

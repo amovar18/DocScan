@@ -74,6 +74,7 @@ public class cropper extends DocumentScanActivity {
         originalImage=ScannerConstants.selectedImageBitmap;
         bottom_sheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int newState) {
@@ -158,6 +159,7 @@ public class cropper extends DocumentScanActivity {
                                 if (cropImage != null) {
                                     ScannerConstants.selectedImageBitmap = cropImage;
                                     originalImage=cropImage;
+                                    imageView.setImageBitmap(cropImage);
                                     setResult(RESULT_OK);
                                 }
                             })
@@ -303,8 +305,10 @@ public class cropper extends DocumentScanActivity {
     }
     public Bitmap setGrayscale(Bitmap bitmap){
         Mat src= ImageUtils.bitmapToMat(bitmap);
+        Mat intermediate=new Mat();
+        Imgproc.cvtColor(src,intermediate,Imgproc.COLOR_RGB2GRAY);
         Mat grey=new Mat();
-        Imgproc.adaptiveThreshold(src, grey, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 40);
+        Imgproc.adaptiveThreshold(intermediate, grey, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 40);
         return ImageUtils.matToBitmap(grey);
     }
     private void invertColor() {

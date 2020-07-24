@@ -24,7 +24,7 @@
         <item name="save_pdf_color_text">#ffffff</item>
         <item name="actionBar">#03A9F4</item>
         <item name="backgroundColor">#ffffff</item>
-        <item name="cardviewBackgroundcolor">#CFD8DC</item>
+        <item name="cardviewBackgroundcolor">#ECEFF1</item>
         <item name="ButtonColor">#03A9F4</item>
         <item name="textcolor">#000000</item>
     </style>

@@ -76,7 +76,7 @@ public class image_capture extends AppCompatActivity {
     }
     private Button proceedtonext;
     private boolean isFlashSupported;
-    private boolean isTorchOn;
+    private boolean isTorchOn=false;
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -122,7 +122,13 @@ public class image_capture extends AppCompatActivity {
         flash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setupFlashButton();
+                if (isTorchOn) {
+                    flash.setImageResource(R.drawable.do_flash_on);
+                    isTorchOn=false;
+                } else {
+                    flash.setImageResource(R.drawable.do_flash_off);
+                    isTorchOn=true;
+                }
             }
         });
         proceedtonext=findViewById(R.id.done_capturing);
@@ -229,11 +235,11 @@ public class image_capture extends AppCompatActivity {
             Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             isFlashSupported = available == null ? false : available;
             if (isTorchOn) {
-                captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
+                captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
                 flash.setImageResource(R.drawable.do_flash_off);
                 isTorchOn = false;
             } else {
-                captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+                captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
                 flash.setImageResource(R.drawable.do_flash_on);
                 isTorchOn = true;
             }
@@ -411,7 +417,7 @@ public class image_capture extends AppCompatActivity {
     @Override
     protected void onPause() {
         Log.e(TAG, "onPause");
-        //closeCamera();
+        closeCamera();
         stopBackgroundThread();
         super.onPause();
     }
@@ -506,12 +512,11 @@ public class image_capture extends AppCompatActivity {
         if (requestCode == PICK_IMAGE) {
             if (datas.getClipData() != null) {
                 ClipData clipData = datas.getClipData();
-                ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 FileOutputStream fos;
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     String file_name_selected = (i + 1) + ".jpeg";
-                    Uri selectedImage = clipData.getItemAt(0).getUri();//As of now use static position 0 use as per itemcount.
+                    Uri selectedImage = clipData.getItemAt(i).getUri();//As of now use static position 0 use as per itemcount.
                     Bitmap bitmap = null;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
@@ -543,13 +548,8 @@ public class image_capture extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }
-    }
-    public void setupFlashButton() {
-        if (isTorchOn) {
-            flash.setImageResource(R.drawable.do_flash_off);
-        } else {
-            flash.setImageResource(R.drawable.do_flash_on);
+            Intent intent=new Intent(image_capture.this,captured_image_display.class);
+            startActivity(intent);
         }
     }
 }
