@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="?attr/backgroundColor"
     tools:context=".captured_image_display">
-    <include layout="@layout/toolbar"/>
+    <include android:id="@+id/toolbar_layout_cid"
+        layout="@layout/toolbar"/>
     <LinearLayout
+        android:layout_below="@id/toolbar_layout_cid"
         android:layout_marginTop="5dp"
         android:weightSum="3"
+        android:id="@+id/to_save_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:textColor="?attr/textcolor"
             android:textSize="18dp"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
@@ -19,6 +24,8 @@
             android:layout_height="wrap_content"
             android:text="@string/filename"/>
         <EditText
+            android:textColorHint="?attr/textcolor"
+            android:textColor="?attr/textcolor"
             android:id="@+id/filename_to_be_set"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
@@ -28,14 +35,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
+            android:background="?attr/save_pdf_color"
+            android:textColor="?attr/save_pdf_color_text"
             android:fontFamily="@font/amaranth"
             android:layout_weight="1"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save_pdf"
             android:id="@+id/save_pdf_action"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@id/to_save_details"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,5 +56,12 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:id="@+id/progress_circular"
-        android:layout_gravity="center"/>
-</LinearLayout>
+        android:layout_centerInParent="true"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_more_images"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_add"/>
+</RelativeLayout>

@@ -15,9 +15,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.pdf.PdfRenderer;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -70,6 +73,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public fileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -80,6 +84,27 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
 
     @Override
     public void onBindViewHolder(@NonNull fileViewHolder holder, int position) {
+        holder.filename_textview.setText(dataset.get(position));
+        if (dataset.get(position).contains(".")){
+            try {
+                ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
+                PdfRenderer renderer = new PdfRenderer(parcelFileDescriptor);
+                Bitmap bitmap;
+                PdfRenderer.Page page = renderer.openPage(0);
+                bitmap=Bitmap.createBitmap(page.getWidth(),page.getHeight(), Bitmap.Config.RGB_565);
+                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                page.close();
+                holder.filethumbnail_imageview.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
+            File[] temp_files=file.listFiles();
+            Bitmap bitmap= BitmapFactory.decodeFile(temp_files[0].getAbsolutePath());
+            holder.filethumbnail_imageview.setImageBitmap(bitmap);
+        }
         holder.menu_imageview.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,7 +152,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             switch(menuItem.getItemId()){
                                 case R.id.image_directory_delete:
-                                    File file=new File(context.getExternalFilesDir(null)+"/"+dataset.get(position));
+                                    File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
                                     File[] temp_files=file.listFiles();
                                     for(File delete_file : temp_files){
                                         delete_file.delete();
@@ -139,6 +164,12 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                                     notifyDataSetChanged();
                                     break;
                                 case R.id.image_directory_edit:
+                                    File image_directory_file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
+                                    File[] list_files=image_directory_file.listFiles();
+                                    for (File names:list_files){
+                                        object.setFilename(names.getName());
+                                    }
+                                    object.setImage_Path(image_directory_file.getAbsolutePath(),dataset.get(position));
                                     Intent intent=new Intent(context,captured_image_display.class);
                                     context.startActivity(intent);
                                     break;

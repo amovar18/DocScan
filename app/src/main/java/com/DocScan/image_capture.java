@@ -244,7 +244,7 @@ public class image_capture extends AppCompatActivity {
                 createDirectory();
             }
             Date c = Calendar.getInstance().getTime();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
             String file_name_capture = "IMG_" + simpleDateFormat.format(c) + ".jpeg";
             final File file = new File(data.getImage_path() + "/" + file_name_capture);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
@@ -447,7 +447,7 @@ public class image_capture extends AppCompatActivity {
 
     public void createDirectory() {
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String folder_name = simpleDateFormat.format(c);
         final File file = new File(getExternalFilesDir(null) + "/Pictures/" + folder_name);
         if (!file.exists()) {

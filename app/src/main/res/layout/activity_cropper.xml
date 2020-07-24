@@ -2,144 +2,156 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="?attr/backgroundColor"
     android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="10">
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <include android:id="@+id/toolbar_layout_cropper"
+            layout="@layout/toolbar"/>
+        <LinearLayout
+            android:layout_below="@id/toolbar_layout_cropper"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp">
-            <ImageView
-                android:id="@+id/ivOriginal"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:contentDescription="@string/original_image"
-                android:layout_alignParentStart="true"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_original"
-                android:foreground="?android:selectableItemBackground"
-                android:layout_centerVertical="true"/>
-            <ImageView
-                android:id="@+id/ivBlackandWhite"
-                android:layout_toStartOf="@id/ivInvert"
-                android:layout_toEndOf="@id/ivOriginal"
-                android:contentDescription="@string/black_and_white"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_filter_b_and_w"
-                android:layout_centerVertical="true" />
-            <ImageView
-                android:contentDescription="@string/monochrome"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/ivInvert"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_invert_colors"
-                android:foreground="?android:selectableItemBackground"
-                android:layout_centerVertical="true"/>
-            <ImageView
-                android:id="@+id/ivRebase"
-                android:contentDescription="@string/realign"
-                android:layout_toStartOf="@id/ivRotate"
-                android:layout_toEndOf="@id/ivInvert"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_align"
-                android:foreground="?android:selectableItemBackground"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"/>
-            <ImageView
-                android:id="@+id/ivRotate"
-                android:contentDescription="@string/rotate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="5dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_rotate"
-                android:foreground="?android:selectableItemBackground"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8"
-            android:layout_gravity="center"
-            android:layout_margin="10dp">
-
-            <FrameLayout
-                android:id="@+id/holderImageCrop"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+                <ImageView
+                    android:id="@+id/ivOriginal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:contentDescription="@string/original_image"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_original"
+                    android:foreground="?android:selectableItemBackground"
+                    android:layout_centerVertical="true"/>
+                <ImageView
+                    android:id="@+id/ivBlackandWhite"
+                    android:layout_toStartOf="@id/ivInvert"
+                    android:layout_toEndOf="@id/ivOriginal"
+                    android:contentDescription="@string/black_and_white"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_filter_b_and_w"
+                    android:layout_centerVertical="true" />
+                <ImageView
+                    android:contentDescription="@string/monochrome"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/ivInvert"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_invert_colors"
+                    android:foreground="?android:selectableItemBackground"
+                    android:layout_centerVertical="true"/>
+                <ImageView
+                    android:id="@+id/ivRebase"
+                    android:contentDescription="@string/realign"
+                    android:layout_toStartOf="@id/ivRotate"
+                    android:layout_toEndOf="@id/ivInvert"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_align"
+                    android:foreground="?android:selectableItemBackground"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"/>
+                <ImageView
+                    android:id="@+id/ivRotate"
+                    android:contentDescription="@string/rotate"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_rotate"
+                    android:foreground="?android:selectableItemBackground"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+            </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8"
                 android:layout_gravity="center"
                 android:layout_margin="10dp">
 
-                <ImageView
-                    android:id="@+id/imageView"
+                <FrameLayout
+                    android:id="@+id/holderImageCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/main_image_display" />
+                    android:layout_margin="10dp">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/main_image_display" />
+                </FrameLayout>
+
+                <com.DocScan.libraries.PolygonView
+                    android:id="@+id/polygonView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
             </FrameLayout>
 
-            <com.DocScan.libraries.PolygonView
-                android:id="@+id/polygonView"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-        </FrameLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center">
-            <Button
-                android:background="?attr/ButtonColor"
-                android:layout_toEndOf="@id/btnScanText"
-                android:id="@+id/btnImageCrop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="@string/crop"/>
-            <Button
-                android:background="?attr/ButtonColor"
-                android:layout_toStartOf="@id/btnScanText"
-                android:id="@+id/btnDone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="@string/done" />
-            <Button
-                android:background="?attr/ButtonColor"
-                android:id="@+id/btnScanText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/extract_text"
-                android:layout_centerHorizontal="true"/>
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center">
+                <Button
+                    android:textColor="?attr/textcolor"
+                    android:background="?attr/ButtonColor"
+                    android:layout_toEndOf="@id/btnScanText"
+                    android:id="@+id/btnImageCrop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/crop"/>
+                <Button
+                    android:textColor="?attr/textcolor"
+                    android:background="?attr/ButtonColor"
+                    android:layout_toStartOf="@id/btnScanText"
+                    android:id="@+id/btnDone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/done" />
+                <Button
+                    android:textColor="?attr/save_pdf_color_text"
+                    android:background="?attr/save_pdf_color"
+                    android:id="@+id/btnScanText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/extract_text"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <include layout="@layout/bottomsheet_for_ocr_text"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

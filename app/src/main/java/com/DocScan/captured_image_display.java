@@ -2,6 +2,7 @@ package com.DocScan;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
@@ -19,11 +20,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class captured_image_display extends AppCompatActivity {
     datastore ds=new datastore();
@@ -33,12 +35,16 @@ public class captured_image_display extends AppCompatActivity {
     ProgressBar progressBar;
     Button start_saving;
     EditText filename;
+    ArrayList<String> dataSet=ds.getAllData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captured_image_display);
         filename=findViewById(R.id.filename_to_be_set);
         recyclerView=findViewById(R.id.image_displayer);
+        adapter=new captured_image_adapter(dataSet,captured_image_display.this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         toolbar=findViewById(R.id.toolbar);
         start_saving=findViewById(R.id.save_pdf_action);
         start_saving.setOnClickListener(save_pdf);
@@ -100,6 +106,7 @@ public class captured_image_display extends AppCompatActivity {
                 Intent intent=new Intent(captured_image_display.this,MainActivity.class);
                 progressBar.setVisibility(View.GONE);
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                ds.clear_all_data();
                 startActivity(intent);
                 finish();
             }

@@ -2,6 +2,7 @@ package com.DocScan;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -66,6 +67,7 @@ public class cropper extends DocumentScanActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cropper);
+        Toolbar toolbar=findViewById(R.id.toolbar);
         file=new File(data_object.getImage_path()+"/"+data_object.getFilename(getIntent().getIntExtra("data",0)));
         ScannerConstants.selectedImageBitmap= BitmapFactory.decodeFile(file.toString());
         cropImage=ScannerConstants.selectedImageBitmap;

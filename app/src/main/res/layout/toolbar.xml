@@ -4,11 +4,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <androidx.appcompat.widget.Toolbar
         app:title="@string/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="?attr/actionBar"
         android:id="@+id/toolbar"/>
 </LinearLayout>

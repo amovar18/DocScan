@@ -1,7 +1,12 @@
 package com.DocScan;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.display.DisplayManager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -25,25 +31,16 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
         // each data item is just a string in this case
         public ImageView delete_imageview,main_ImageView;
         public View layout;
-
+        public CardView cardView;
         public imageViewHolder(View view) {
             super(view);
             layout = view;
+            cardView=view.findViewById(R.id.single_image_holder_cardview);
             main_ImageView=view.findViewById(R.id.single_image);
             delete_imageview=view.findViewById(R.id.delete_single_image);
+
         }
     }
-
-    public void add(int position, String item) {
-        dataset.add(position, item);
-        notifyItemInserted(position);
-    }
-
-    public void remove(int position) {
-        dataset.remove(position);
-        notifyItemRemoved(position);
-    }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public captured_image_adapter(ArrayList<String> passedDataset, Context context) {
         dataset = passedDataset;
@@ -54,19 +51,27 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
     @Override
     public imageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.single_file_detail_shower, parent, false);
+        View v = inflater.inflate(R.layout.image_display, parent, false);
         imageViewHolder image = new imageViewHolder(v);
         return image;
     }
 
     @Override
     public void onBindViewHolder(@NonNull imageViewHolder holder, int position) {
+        Bitmap display_bitmap= BitmapFactory.decodeFile(object.getImage_path()+"/"+object.getFilename(position));
+        holder.main_ImageView.setImageBitmap(display_bitmap);
+        DisplayMetrics displayMetrics=new DisplayMetrics();
+        ((captured_image_display) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width=displayMetrics.widthPixels;
+        width=(width/2)-10;
+        holder.main_ImageView.setMaxWidth(width);
         holder.delete_imageview.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 File file=new File(object.getImage_path()+"/"+object.getFilename(position));
                 if(file.exists()){
                     file.delete();
+                    dataset.remove(position);
                 }
                 notifyDataSetChanged();
             }

@@ -40,4 +40,7 @@ public class datastore {
     public int getSize(){
         return filenames.size();
     }
+    public ArrayList<String> getAllData(){
+        return filenames;
+    }
 }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1041249162064",
+    "firebase_url": "https://docscan-a870c.firebaseio.com",
+    "project_id": "docscan-a870c",
+    "storage_bucket": "docscan-a870c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041249162064:android:b8ceeca972b675fb785255",
+        "android_client_info": {
+          "package_name": "com.DocScan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041249162064-p9grd6hce2r3m13lp6o1vfrr49n1c77c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDX_rDJwBn3CfRAR42LgIY3qjoVbEUMIxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041249162064-p9grd6hce2r3m13lp6o1vfrr49n1c77c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
