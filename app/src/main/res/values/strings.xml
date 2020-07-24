@@ -17,4 +17,6 @@
     <string name="save_pdf">Save PDF</string>
     <string name="filename">Filename:</string>
     <string name="enter_filename">Enter Filename</string>
+    <string name="main_image_display">Main Image Display</string>
+    <string name="proceed">Proceed</string>
 </resources>

@@ -4,7 +4,23 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentPrimary</item>
+    </style>
+    <style name="splashScreentheme" parent="Theme.AppCompat.NoActionBar">
+        <item name = "android:windowActionBar">false</item>
+        <item name = "android:windowNoTitle">true</item>
+    </style>
+    <style name="DarkAppTheme" parent="AppTheme">
+        <item name="actionBar">#455A64</item>
+        <item name="cardviewBackgroundcolor">#1f4068</item>
+        <item name="ButtonColor">#1DE9B6</item>
+        <item name="backgroundColor">#1b1b2f</item>
+    </style>
+    <style name="LightAppTheme" parent="AppTheme">
+        <item name="actionBar">#00E676</item>
+        <item name="backgroundColor">#ffffff</item>
+        <item name="cardviewBackgroundcolor">#CFD8DC</item>
+        <item name="ButtonColor">#1DE9B6</item>
     </style>
 
 </resources>

@@ -1,8 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".image_capture">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="10">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="9">
+            <TextureView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textureView"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="5dp"
+            android:background="#aeaeae"/>
+        <LinearLayout
+            android:layout_marginBottom="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/ic_shutter"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/shoot_photo"/>
+                <ImageView
+                    android:src="@drawable/ic_gallery"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/select_image_from_gallery"/>
+                <ImageView
+                    android:src="@drawable/do_flash_on"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/shoot_photo"
+                    android:layout_toStartOf="@id/done_capturing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/flash"/>
+                <Button
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="#ffffff"
+                    android:textSize="22dp"
+                    android:fontFamily="@font/amaranth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/proceed"
+                    android:id="@+id/done_capturing"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

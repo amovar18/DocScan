@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -47,7 +48,7 @@ public class cropper extends DocumentScanActivity {
     private Bitmap cropImage,originalImage;
     private boolean isInverted;
     private  ImageView imageView;
-    private TextView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original;
+    private ImageView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original;
     private  PolygonView polygonView;
     private Button crop,done,extract;
     private BottomSheetBehavior sheetBehavior;
