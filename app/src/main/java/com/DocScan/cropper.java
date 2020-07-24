@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -38,11 +39,18 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class cropper extends DocumentScanActivity {
+    datastore data_object=new datastore();
     private FrameLayout holderImageCrop;
     private ProgressBar progressBar;
     private Bitmap cropImage,originalImage;
@@ -53,11 +61,13 @@ public class cropper extends DocumentScanActivity {
     private Button crop,done,extract;
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
-
+    private File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cropper);
+        file=new File(data_object.getImage_path()+"/"+data_object.getFilename(getIntent().getIntExtra("data",0)));
+        ScannerConstants.selectedImageBitmap= BitmapFactory.decodeFile(file.toString());
         cropImage=ScannerConstants.selectedImageBitmap;
         originalImage=ScannerConstants.selectedImageBitmap;
         bottom_sheet = findViewById(R.id.bottom_sheet);
@@ -113,6 +123,18 @@ public class cropper extends DocumentScanActivity {
     private View.OnClickListener setImageFinal =new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
+            try {
+                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                if(file.exists()){
+                    file.delete();
+                }
+                cropImage.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+                FileOutputStream fos=new FileOutputStream(file);
+                fos.write(byteArrayOutputStream.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             finish();
         }
     };
@@ -200,15 +222,14 @@ public class cropper extends DocumentScanActivity {
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
-                        setGrayscale(cropImage);
+                        cropImage=setGrayscale(cropImage);
                         return false;
                     })
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((result) -> {
                                 hideProgressBar();
-                                Bitmap scaledBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                                imageView.setImageBitmap(scaledBitmap);
+                                imageView.setImageBitmap(cropImage);
                             })
             );
         }
@@ -282,8 +303,7 @@ public class cropper extends DocumentScanActivity {
         Mat src= ImageUtils.bitmapToMat(bitmap);
         Mat grey=new Mat();
         Imgproc.adaptiveThreshold(src, grey, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, 40);
-        Bitmap grayscale_result=ImageUtils.matToBitmap(grey);
-        return grayscale_result;
+        return ImageUtils.matToBitmap(grey);
     }
     private void invertColor() {
         if (!isInverted) {

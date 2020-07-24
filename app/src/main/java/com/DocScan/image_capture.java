@@ -35,6 +35,7 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -74,6 +75,7 @@ public class image_capture extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
+    private Button proceedtonext;
     private boolean isFlashSupported;
     private boolean isTorchOn;
     private String cameraId;
@@ -122,6 +124,14 @@ public class image_capture extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 setupFlashButton();
+            }
+        });
+        proceedtonext=findViewById(R.id.done_capturing);
+        proceedtonext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(image_capture.this,captured_image_display.class);
+                startActivity(intent);
             }
         });
     }
