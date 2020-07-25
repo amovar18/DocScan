@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.DocScan.R;
+import com.DocScan.helpers.ScannerConstants;
 import com.DocScan.libraries.NativeClass;
 import com.DocScan.libraries.PolygonView;
 
@@ -79,7 +80,6 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
     }
 
     protected void startCropping() {
-        selectedImage = getBitmapImage();
         setProgressBar(true);
         disposable.add(Observable.fromCallable(() -> false)
                         .subscribeOn(Schedulers.io())
@@ -93,7 +93,7 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
 
 
     private void initializeCropping() {
-        Bitmap scaledBitmap = scaledBitmap(selectedImage, getHolderImageCrop().getWidth(), getHolderImageCrop().getHeight());
+        Bitmap scaledBitmap = scaledBitmap(ScannerConstants.selectedImageBitmap, getHolderImageCrop().getWidth(), getHolderImageCrop().getHeight());
         getImageView().setImageBitmap(scaledBitmap);
 
         Bitmap tempBitmap = ((BitmapDrawable) getImageView().getDrawable()).getBitmap();
@@ -120,8 +120,8 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
         try {
             Map<Integer, PointF> points = getPolygonView().getPoints();
 
-            float xRatio = (float) selectedImage.getWidth() / getImageView().getWidth();
-            float yRatio = (float) selectedImage.getHeight() / getImageView().getHeight();
+            float xRatio = (float) ScannerConstants.selectedImageBitmap.getWidth() / getImageView().getWidth();
+            float yRatio = (float) ScannerConstants.selectedImageBitmap.getHeight() / getImageView().getHeight();
 
             float x1 = (Objects.requireNonNull(points.get(0)).x) * xRatio;
             float x2 = (Objects.requireNonNull(points.get(1)).x) * xRatio;
@@ -131,7 +131,7 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
             float y2 = (Objects.requireNonNull(points.get(1)).y) * yRatio;
             float y3 = (Objects.requireNonNull(points.get(2)).y) * yRatio;
             float y4 = (Objects.requireNonNull(points.get(3)).y) * yRatio;
-            return nativeClass.getScannedBitmap(selectedImage, x1, y1, x2, y2, x3, y3, x4, y4);
+            return nativeClass.getScannedBitmap(ScannerConstants.selectedImageBitmap, x1, y1, x2, y2, x3, y3, x4, y4);
         } catch (Exception e) {
             showError(CropperErrorType.CROP_ERROR);
             return null;
@@ -140,7 +140,7 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
 
     protected Bitmap scaledBitmap(Bitmap bitmap, int width, int height) {
         Matrix m = new Matrix();
-        m.setRectToRect(new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight()), new RectF(0, 0, width, height), Matrix.ScaleToFit.CENTER);
+        m.setRectToRect(new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight()), new RectF(0, 0, width, height), Matrix.ScaleToFit.FILL);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     }
 

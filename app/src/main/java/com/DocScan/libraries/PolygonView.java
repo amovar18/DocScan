@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by jhansi on 28/03/15.
@@ -149,17 +150,17 @@ public class PolygonView extends FrameLayout {
     }
 
     private void setPointsCoordinates(Map<Integer, PointF> pointFMap) {
-        pointer1.setX(pointFMap.get(0).x);
-        pointer1.setY(pointFMap.get(0).y);
+        pointer1.setX(Objects.requireNonNull(pointFMap.get(0)).x);
+        pointer1.setY(Objects.requireNonNull(pointFMap.get(0)).y);
 
-        pointer2.setX(pointFMap.get(1).x);
-        pointer2.setY(pointFMap.get(1).y);
+        pointer2.setX(Objects.requireNonNull(pointFMap.get(1)).x);
+        pointer2.setY(Objects.requireNonNull(pointFMap.get(1)).y);
 
-        pointer3.setX(pointFMap.get(2).x);
-        pointer3.setY(pointFMap.get(2).y);
+        pointer3.setX(Objects.requireNonNull(pointFMap.get(2)).x);
+        pointer3.setY(Objects.requireNonNull(pointFMap.get(2)).y);
 
-        pointer4.setX(pointFMap.get(3).x);
-        pointer4.setY(pointFMap.get(3).y);
+        pointer4.setX(Objects.requireNonNull(pointFMap.get(3)).x);
+        pointer4.setY(Objects.requireNonNull(pointFMap.get(3)).y);
     }
 
     @Override

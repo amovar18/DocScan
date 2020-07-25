@@ -75,23 +75,21 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true" />
             </RelativeLayout>
+
             <FrameLayout
-                android:id="@+id/frameLayout"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="8"
-                android:layout_gravity="center"
-                android:layout_margin="10dp">
-
+                android:layout_margin="10dp"
+                android:layout_weight="8">
                 <FrameLayout
                     android:id="@+id/holderImageCrop"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp">
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/imageView"
+                        android:scaleType="fitXY"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -100,12 +98,13 @@
                 </FrameLayout>
 
                 <com.DocScan.libraries.PolygonView
+                    android:layout_margin="10dp"
                     android:id="@+id/polygonView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
                     android:visibility="gone"/>
             </FrameLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"

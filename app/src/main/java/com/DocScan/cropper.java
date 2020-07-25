@@ -148,8 +148,6 @@ public class cropper extends DocumentScanActivity {
             disposable.add(
                     Observable.fromCallable(() -> {
                         cropImage = getCroppedImage();
-                        if (cropImage == null)
-                            return false;
                         return false;
                     })
                             .subscribeOn(Schedulers.io())
@@ -157,11 +155,10 @@ public class cropper extends DocumentScanActivity {
                             .subscribe((result) -> {
                                 hideProgressBar();
                                 if (cropImage != null) {
+                                    startCropping();
+                                    imageView.setImageBitmap(cropImage);
                                     ScannerConstants.selectedImageBitmap = cropImage;
                                     originalImage=cropImage;
-                                    imageView.setImageBitmap(cropImage);
-                                    startCropping();
-                                    setResult(RESULT_OK);
                                 }
                             })
             );
@@ -303,7 +300,7 @@ public class cropper extends DocumentScanActivity {
 
     @Override
     protected Bitmap getBitmapImage() {
-        return cropImage;
+        return ScannerConstants.selectedImageBitmap;
     }
 
     @Override
