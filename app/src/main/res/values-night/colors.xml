@@ -7,4 +7,13 @@
     <color name="textcolor">#ffffff</color>
     <color name="save_pdf_color">#ECEFF1</color>
     <color name="save_pdf_color_text">#000000</color>
+
+    <color name="colorAccent">#1DE9B6</color>
+    <color name="colorAccentPrimary">#00E676</color>
+    <color name="colorGrey">#cccccc</color>
+    <color name="blue">#ff59a9ff</color>
+    <color name="orange">#ffff900d</color>
+    <color name="bottom_background_color">#ffc4c2bc</color>
+    <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
+    <color name="polygonViewCircleBackground">#90e5f8ff</color>
 </resources>

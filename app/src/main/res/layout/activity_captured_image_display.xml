@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/backgroundColor"
+    android:background="@color/backgroundColor"
     tools:context=".captured_image_display">
     <include android:id="@+id/toolbar_layout_cid"
         layout="@layout/toolbar"/>
@@ -18,7 +18,7 @@
         <TextView
             android:textColor="@color/textcolor"
             android:textSize="18sp"
-            android:fontFamily="@font/amaranth"
+            android:fontFamily="@font/roboto_slab_bold"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:textColorHint="@color/textcolor"
             android:textColor="@color/textcolor"
             android:id="@+id/filename_to_be_set"
-            android:fontFamily="@font/amaranth"
+            android:fontFamily="@font/roboto_slab_light"
             android:layout_weight="1"
             android:padding="10dp"
             android:minWidth="200dp"
@@ -39,7 +39,7 @@
         <Button
             android:background="@color/save_pdf_color"
             android:textColor="@color/save_pdf_color_text"
-            android:fontFamily="@font/amaranth"
+            android:fontFamily="@font/roboto_slab_bold"
             android:layout_weight="1"
             android:textSize="20sp"
             android:layout_width="wrap_content"
@@ -56,7 +56,6 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:id="@+id/progress_circular"
         android:layout_centerInParent="true"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

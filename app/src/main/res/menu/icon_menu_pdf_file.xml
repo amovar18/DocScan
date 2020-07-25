@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/pdf_edit"
-        android:title="@string/edit"/>
-    <item android:id="@+id/pdf_delete"
-        android:title="@string/delete"/>
-    <item android:id="@+id/pdf_open"
-        android:title="@string/open_pdf"/>
-    <item android:id="@+id/pdf_share"
-        android:title="@string/share_as_pdf"/>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        app:actionLayout="@font/roboto_slab_bold"
+        android:id="@+id/pdf_edit"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/edit" />
+    <item
+        app:actionLayout="@font/roboto_slab_bold"
+        android:id="@+id/pdf_delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete" />
+    <item
+        app:actionLayout="@font/roboto_slab_bold"
+        android:id="@+id/pdf_open"
+        android:icon="@drawable/ic_open"
+        android:title="@string/open_pdf" />
+    <item
+        app:actionLayout="@font/roboto_slab_bold"
+        android:id="@+id/pdf_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share_as_pdf" />
 </menu>

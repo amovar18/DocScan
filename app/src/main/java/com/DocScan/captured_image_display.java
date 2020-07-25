@@ -57,6 +57,7 @@ public class captured_image_display extends AppCompatActivity {
         start_saving.setOnClickListener(save_pdf);
         filename.setText(ds.getFolder());
         progressBar=findViewById(R.id.progress_circular);
+        progressBar.setVisibility(View.GONE);
         floatingActionButton.bringToFront();
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +134,7 @@ public class captured_image_display extends AppCompatActivity {
                 }
                 File file=new File(ds.getImage_path()+"/");
                 File[] temp_files=file.listFiles();
+                assert temp_files != null;
                 for(File delete_file : temp_files){
                     delete_file.delete();
                 }
@@ -153,5 +155,6 @@ public class captured_image_display extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         floatingActionButton.bringToFront();
+        adapter.notifyDataSetChanged();
     }
 }

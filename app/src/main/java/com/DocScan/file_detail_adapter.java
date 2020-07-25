@@ -126,13 +126,13 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                                 case R.id.pdf_open:
                                     Intent intent=new Intent(Intent.ACTION_VIEW);
                                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    Uri path= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getStorageDirectory()+"/DocScan"+dataset.get(position)));
+                                    Uri path= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
                                     intent.setDataAndType(path, "application/pdf");
                                     context.startActivity(intent);
                                     break;
                                 case R.id.pdf_share:
-                                    Intent shareintent=new Intent(Intent.ACTION_VIEW);
-                                    Uri sharepath= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getStorageDirectory()+"/DocScan"+dataset.get(position)));
+                                    Intent shareintent=new Intent(Intent.ACTION_SEND);
+                                    Uri sharepath= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
                                     shareintent.setDataAndType(sharepath, "application/pdf");
                                     context.startActivity(Intent.createChooser(shareintent,"Select Mode of Sharing:"));
                                     break;
@@ -189,7 +189,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
     public void edit(int position) {
         try {
             createDirectory();
-            ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
+            ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan/" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
             PdfRenderer renderer = new PdfRenderer(parcelFileDescriptor);
             Bitmap bitmap;
             ByteArrayOutputStream byteArrayOutputStream;

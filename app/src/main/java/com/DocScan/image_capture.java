@@ -1,6 +1,7 @@
 package com.DocScan;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
@@ -24,18 +26,20 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.MediaActionSound;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,11 +47,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,8 +67,8 @@ import java.util.Objects;
 
 public class image_capture extends AppCompatActivity {
     datastore data = new datastore();
-    private static final String TAG = "LOG";
-    private ImageView takePictureButton, pick_from_Gallery, flash;
+    private ImageView proceedtonext;
+    private ImageView flash;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -74,20 +78,15 @@ public class image_capture extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-    private Button proceedtonext;
-    private boolean isFlashSupported;
+    boolean taken_image=false;
     private boolean isTorchOn=false;
-    private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
-    protected CaptureRequest captureRequest;
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private File file;
     public static final int PICK_IMAGE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
@@ -98,7 +97,7 @@ public class image_capture extends AppCompatActivity {
         textureView = (TextureView) findViewById(R.id.textureView);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
-        takePictureButton = findViewById(R.id.shoot_photo);
+        ImageView takePictureButton = findViewById(R.id.shoot_photo);
         assert takePictureButton != null;
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +105,7 @@ public class image_capture extends AppCompatActivity {
                 takePicture();
             }
         });
-        pick_from_Gallery = findViewById(R.id.select_image_from_gallery);
+        ImageView pick_from_Gallery = findViewById(R.id.select_image_from_gallery);
         pick_from_Gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +130,9 @@ public class image_capture extends AppCompatActivity {
                 }
             }
         });
-        proceedtonext=findViewById(R.id.done_capturing);
+        proceedtonext= findViewById(R.id.done_capturing);
+        proceedtonext.setBackgroundColor(ContextCompat.getColor(this,R.color.colorGrey));
+        proceedtonext.setEnabled(false);
         proceedtonext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,48 +144,47 @@ public class image_capture extends AppCompatActivity {
 
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
             //open your camera here
             openCamera();
         }
 
         @Override
-        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
             // Transform you image captured size according to the surface width and height
         }
 
         @Override
-        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
             return false;
         }
 
         @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
         }
     };
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
-        public void onOpened(CameraDevice camera) {
+        public void onOpened(@NonNull CameraDevice camera) {
             //This is called when the camera is open
-            Log.e(TAG, "onOpened");
             cameraDevice = camera;
             createCameraPreview();
         }
 
         @Override
-        public void onDisconnected(CameraDevice camera) {
+        public void onDisconnected(@NonNull CameraDevice camera) {
             cameraDevice.close();
         }
 
         @Override
-        public void onError(CameraDevice camera, int error) {
+        public void onError(@NonNull CameraDevice camera, int error) {
             cameraDevice.close();
             cameraDevice = null;
         }
     };
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
         @Override
-        public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
             createCameraPreview();
         }
@@ -209,7 +209,6 @@ public class image_capture extends AppCompatActivity {
 
     protected void takePicture() {
         if (null == cameraDevice) {
-            Log.e(TAG, "cameraDevice is null");
             return;
         }
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -217,7 +216,7 @@ public class image_capture extends AppCompatActivity {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
             Size[] jpegSizes = null;
             if (characteristics != null) {
-                jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
+                jpegSizes = Objects.requireNonNull(characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(ImageFormat.JPEG);
             }
             int width = 640;
             int height = 480;
@@ -233,19 +232,13 @@ public class image_capture extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             //flash
             Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-            isFlashSupported = available == null ? false : available;
             if (isTorchOn) {
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
-                flash.setImageResource(R.drawable.do_flash_off);
-                isTorchOn = false;
             } else {
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
-                flash.setImageResource(R.drawable.do_flash_on);
-                isTorchOn = true;
             }
             // Orientation
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(getrotation()));
             if (!data.has_path_set()) {
                 createDirectory();
             }
@@ -265,8 +258,6 @@ public class image_capture extends AppCompatActivity {
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     } finally {
@@ -349,9 +340,8 @@ public class image_capture extends AppCompatActivity {
 
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        Log.e(TAG, "is camera open");
         try {
-            cameraId = manager.getCameraIdList()[0];
+            String cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
@@ -365,12 +355,11 @@ public class image_capture extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.e(TAG, "openCamera X");
     }
 
     protected void updatePreview() {
         if (null == cameraDevice) {
-            Log.e(TAG, "updatePreview error, return");
+            return;
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         try {
@@ -405,7 +394,6 @@ public class image_capture extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume");
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
@@ -413,19 +401,50 @@ public class image_capture extends AppCompatActivity {
             textureView.setSurfaceTextureListener(textureListener);
         }
     }
-
+    @TargetApi(Build.VERSION_CODES.R)
+    public int getrotation(){
+        int rotation;
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.R){
+            rotation=getWindowManager().getDefaultDisplay().getRotation();
+        }else{
+            rotation=this.getDisplay().getRotation();
+        }
+        return rotation;
+    }
     @Override
     protected void onPause() {
-        Log.e(TAG, "onPause");
         closeCamera();
         stopBackgroundThread();
         super.onPause();
     }
+    @TargetApi(Build.VERSION_CODES.Q)
+    public Size above_30(){
+        final WindowMetrics metrics = getWindowManager().getCurrentWindowMetrics();
+        // Gets all excluding insets
+        final WindowInsets windowInsets = metrics.getWindowInsets();
+        Insets insets = windowInsets.getInsets(WindowInsets.Type.navigationBars());
+        final DisplayCutout cutout = windowInsets.getDisplayCutout();
+        if (cutout != null) {
+            final Insets cutoutSafeInsets = Insets.of(cutout.getBoundingRectLeft());
+            insets = Insets.max(insets, cutoutSafeInsets);
+        }
 
+        int insetsWidth = insets.right + insets.left;
+        int insetsHeight = insets.top + insets.bottom;
+
+        // Legacy size that Display#getSize reports
+        return new Size(metrics.getBounds().width()-insetsWidth, metrics.getBounds().height() - insetsHeight);
+    }
     public Size getImagesize(Size[] jpegSizes) {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
+        Point size=new Point();
+        Size lsize;
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.R){
+            Display display = getWindowManager().getDefaultDisplay();
+            display.getSize(size);
+        }else{
+            lsize=above_30();
+            size.set(lsize.getHeight(),lsize.getWidth());
+        }
         int screenLength = size.x;
         if (screenLength < size.y) {
             screenLength = size.y;
@@ -484,12 +503,20 @@ public class image_capture extends AppCompatActivity {
             }
 
             realImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            Bitmap finalRealImage = realImage;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    proceedtonext.setEnabled(true);
+                    proceedtonext.setImageBitmap(finalRealImage);
+                }
+            });
+
+
 
             fos.close();
             Toast.makeText(this, "Image Captured", Toast.LENGTH_SHORT).show();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -510,14 +537,16 @@ public class image_capture extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent datas) {
         super.onActivityResult(requestCode, resultCode, datas);
         if (requestCode == PICK_IMAGE) {
+            assert datas != null;
             if (datas.getClipData() != null) {
                 ClipData clipData = datas.getClipData();
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ByteArrayOutputStream byteArrayOutputStream;
                 FileOutputStream fos;
+                Bitmap bitmap = null;
                 for (int i = 0; i < clipData.getItemCount(); i++) {
                     String file_name_selected = (i + 1) + ".jpeg";
                     Uri selectedImage = clipData.getItemAt(i).getUri();//As of now use static position 0 use as per itemcount.
-                    Bitmap bitmap = null;
+                    byteArrayOutputStream=new ByteArrayOutputStream();
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);

@@ -25,7 +25,8 @@
             android:layout_marginBottom="5dp"
             android:background="#aeaeae"/>
         <LinearLayout
-            android:layout_marginBottom="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -46,23 +47,34 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/select_image_from_gallery"/>
                 <ImageView
+                    android:layout_marginEnd="5dp"
                     android:src="@drawable/do_flash_on"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/shoot_photo"
-                    android:layout_toStartOf="@id/done_capturing"
+                    android:layout_toStartOf="@id/next_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/flash"/>
-                <Button
-                    android:layout_centerVertical="true"
+                <RelativeLayout
                     android:layout_alignParentEnd="true"
-                    android:textColor="#ffffff"
-                    android:textSize="22dp"
-                    android:fontFamily="@font/amaranth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="@string/proceed"
-                    android:id="@+id/done_capturing"/>
+                    android:id="@+id/next_holder"
+                    android:layout_centerVertical="true"
+                    android:layout_width="50dp"
+                    android:layout_height="100dp">
+                    <ImageView
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="5dp"
+                        android:padding="5dp"
+                        android:layout_width="50dp"
+                        android:layout_height="100dp"
+                        android:id="@+id/done_capturing" />
+                    <ImageView
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_navigate_next_24" />
+                </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

@@ -55,7 +55,7 @@ public class cropper extends DocumentScanActivity {
     private FrameLayout holderImageCrop;
     private ProgressBar progressBar;
     private Bitmap cropImage,originalImage;
-    private boolean isInverted;
+    private boolean isInverted=false;
     private  ImageView imageView;
     private ImageView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original;
     private  PolygonView polygonView;
@@ -160,6 +160,7 @@ public class cropper extends DocumentScanActivity {
                                     ScannerConstants.selectedImageBitmap = cropImage;
                                     originalImage=cropImage;
                                     imageView.setImageBitmap(cropImage);
+                                    startCropping();
                                     setResult(RESULT_OK);
                                 }
                             })
@@ -197,7 +198,6 @@ public class cropper extends DocumentScanActivity {
         @Override
         public void onClick(View view) {
             cropImage = ScannerConstants.selectedImageBitmap.copy(ScannerConstants.selectedImageBitmap.getConfig(), true);
-            isInverted = false;
             startCropping();
         }
     };
@@ -227,6 +227,7 @@ public class cropper extends DocumentScanActivity {
             disposable.add(
                     Observable.fromCallable(() -> {
                         cropImage=setGrayscale(cropImage);
+                        isInverted = false;
                         return false;
                     })
                             .subscribeOn(Schedulers.io())
@@ -260,12 +261,18 @@ public class cropper extends DocumentScanActivity {
         @Override
         public void onClick(View view) {
             showProgressBar();
-            cropImage=originalImage.copy(originalImage.getConfig(),true);
-            ScannerConstants.selectedImageBitmap=originalImage.copy(originalImage.getConfig(),true);
-            imageView.setImageBitmap(originalImage);
+            setoriginalImage();
             hideProgressBar();
         }
     };
+
+    private void setoriginalImage() {
+        cropImage=originalImage.copy(originalImage.getConfig(),true);
+        ScannerConstants.selectedImageBitmap=originalImage.copy(originalImage.getConfig(),true);
+        imageView.setImageBitmap(cropImage);
+        isInverted = false;
+    }
+
     @Override
     protected PolygonView getPolygonView() {
         return polygonView;
@@ -313,6 +320,7 @@ public class cropper extends DocumentScanActivity {
     }
     private void invertColor() {
         if (!isInverted) {
+            setoriginalImage();
             Bitmap bmpMonochrome = Bitmap.createBitmap(cropImage.getWidth(), cropImage.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bmpMonochrome);
             ColorMatrix ma = new ColorMatrix();
@@ -324,7 +332,7 @@ public class cropper extends DocumentScanActivity {
         } else {
             cropImage = cropImage.copy(cropImage.getConfig(), true);
         }
-        isInverted = !isInverted;
+        isInverted = true;
     }// click event for show-dismiss bottom sheet
 
 
