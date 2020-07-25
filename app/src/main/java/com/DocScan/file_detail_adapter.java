@@ -80,7 +80,6 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
 
     @Override
     public void onBindViewHolder(@NonNull fileViewHolder holder, int position) {
-        holder.filename_textview.setText(dataset.get(position));
         if (dataset.get(position).contains(".")){
             try {
                 ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan/" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
@@ -91,16 +90,22 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                 page.close();
                 holder.filethumbnail_imageview.setImageBitmap(bitmap);
+                holder.filename_textview.setText(dataset.get(position));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }else{
             File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
             File[] temp_files=file.listFiles();
             assert temp_files != null;
+            if(temp_files.length<=0){
+                file.delete();
+                notifyDataSetChanged();
+            }else{
             Bitmap bitmap= BitmapFactory.decodeFile(temp_files[0].getAbsolutePath());
             holder.filethumbnail_imageview.setImageBitmap(bitmap);
+            holder.filename_textview.setText(dataset.get(position));
+            }
         }
         holder.menu_imageview.setOnClickListener(new OnClickListener() {
             @Override
@@ -113,7 +118,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             switch(menuItem.getItemId()){
                                 case R.id.pdf_delete:
-                                    File file=new File(Environment.getExternalStorageDirectory()+"/"+dataset.get(position));
+                                    File file=new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position));
                                     if(file.exists()){
                                         file.delete();
                                         dataset.remove(position);
@@ -200,7 +205,8 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                 byteArrayOutputStream= new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-                FileOutputStream fos =new FileOutputStream(object.getImage_path());
+                FileOutputStream fos =new FileOutputStream(object.getImage_path()+"/"+(i+1)+".jpeg");
+                object.setFilename((i+1)+".jpeg");
                 fos.write(byteArrayOutputStream.toByteArray());
                 fos.close();
                 // close the page
@@ -209,12 +215,14 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         }catch (IOException e){
             e.printStackTrace();
         }
+        Intent intent=new Intent(context,captured_image_display.class);
+        context.startActivity(intent);
     }
     public void createDirectory() {
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String folder_name = simpleDateFormat.format(c);
-        final File file = new File(context.getExternalFilesDir(null) + "/Pictures/" + folder_name);
+        File file = new File(context.getExternalFilesDir(null) + "/Pictures/" + folder_name);
         if (!file.exists()) {
             file.mkdirs();
         }

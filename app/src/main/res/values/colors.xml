@@ -6,14 +6,14 @@
     <color name="colorPrimaryDark">#42A5F5</color>
     <!--light theme -->
 
-    <color name="save_pdf_color">#777777</color>
-    <color name="save_pdf_color_text">#ffffff</color>
-    <color name="actionBar">#03A9F4</color>
-    <color name="backgroundColor">#ffffff</color>
-    <color name="cardviewBackgroundcolor">#ECEFF1</color>
-    <color name="ButtonColor">#03A9F4</color>
-    <color name="textcolor">#000000</color>
-    <!-- light theme end -->
+    <color name="actionBar">#455A64</color>
+    <color name="backgroundColor">#1f1f1b</color>
+    <color name="ButtonColor">#1DE9B6</color>
+    <color name="cardviewBackgroundcolor">#1f1f1b</color>
+    <color name="textcolor">#ffffff</color>
+    <color name="save_pdf_color">#ECEFF1</color>
+    <color name="save_pdf_color_text">#000000</color>
+
     <color name="colorAccent">#1DE9B6</color>
     <color name="colorAccentPrimary">#00E676</color>
     <color name="colorGrey">#cccccc</color>

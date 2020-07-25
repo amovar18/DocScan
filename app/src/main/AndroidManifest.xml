@@ -45,14 +45,20 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".cropper" />
-        <activity android:name=".captured_image_display" />
+        <activity android:name=".cropper"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".captured_image_display"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".image_capture"
-            android:theme="@style/splashScreentheme" />
-        <activity android:name=".MainActivity">
-
-        </activity>
+            android:launchMode="singleTop"
+            android:theme="@style/splashScreentheme"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

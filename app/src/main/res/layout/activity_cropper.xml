@@ -115,7 +115,7 @@
                 android:gravity="center">
                 <Button
                     android:textColor="@color/textcolor"
-                    android:background="@color/ButtonColor"
+                    android:background="@color/colorPrimaryDark"
                     android:layout_toEndOf="@id/btnScanText"
                     android:id="@+id/btnImageCrop"
                     android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
                     android:text="@string/crop"/>
                 <Button
                     android:textColor="@color/textcolor"
-                    android:background="@color/ButtonColor"
+                    android:background="@color/colorPrimaryDark"
                     android:layout_toStartOf="@id/btnScanText"
                     android:id="@+id/btnDone"
                     android:layout_width="wrap_content"
@@ -135,7 +135,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:textColor="@color/textcolor"
-                    android:background="@color/ButtonColor"
+                    android:background="@color/colorPrimaryDark"
                     android:id="@+id/btnScanText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
