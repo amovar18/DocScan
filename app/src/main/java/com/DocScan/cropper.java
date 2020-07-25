@@ -317,7 +317,6 @@ public class cropper extends DocumentScanActivity {
     }
     private void invertColor() {
         if (!isInverted) {
-            setoriginalImage();
             Bitmap bmpMonochrome = Bitmap.createBitmap(cropImage.getWidth(), cropImage.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bmpMonochrome);
             ColorMatrix ma = new ColorMatrix();
