@@ -48,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
             File[] temp_files=app_specific_files.listFiles();
             if(temp_files!=null) {
                 for (File listing : temp_files) {
-                    fileset.add(listing.getName());
+                    File file=new File(getExternalFilesDir(null)+"/Pictures/"+listing.getName());
+                    File[] temp_file=file.listFiles();
+                    if(temp_file.length<=0){
+                        file.delete();
+                    }else {
+                        fileset.add(listing.getName());
+                    }
                 }
             }
         }
@@ -91,7 +97,13 @@ public class MainActivity extends AppCompatActivity {
         File[] temp_files=app_specific_files.listFiles();
         if(temp_files!=null) {
             for (File listing : temp_files) {
-                fileset.add(listing.getName());
+                File file=new File(getExternalFilesDir(null)+"/Pictures/"+listing.getName());
+                File[] temp_file=file.listFiles();
+                if(temp_file.length<=0){
+                    file.delete();
+                }else {
+                    fileset.add(listing.getName());
+                }
             }
         }
         File[] allfiles = document_files.listFiles();

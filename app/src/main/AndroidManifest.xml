@@ -57,7 +57,6 @@
             android:theme="@style/splashScreentheme"
             android:screenOrientation="portrait" />
         <activity android:name=".MainActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
     </application>
 

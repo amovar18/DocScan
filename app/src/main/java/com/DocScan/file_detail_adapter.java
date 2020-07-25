@@ -98,14 +98,9 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
             File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
             File[] temp_files=file.listFiles();
             assert temp_files != null;
-            if(temp_files.length<=0){
-                file.delete();
-                notifyDataSetChanged();
-            }else{
             Bitmap bitmap= BitmapFactory.decodeFile(temp_files[0].getAbsolutePath());
             holder.filethumbnail_imageview.setImageBitmap(bitmap);
             holder.filename_textview.setText(dataset.get(position));
-            }
         }
         holder.menu_imageview.setOnClickListener(new OnClickListener() {
             @Override
