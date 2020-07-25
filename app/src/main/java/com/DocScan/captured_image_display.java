@@ -103,6 +103,7 @@ public class captured_image_display extends AppCompatActivity {
                         dialogInterface.cancel();
                     }
                 });
+                builder.show();
             }else{
                 progressBar.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);

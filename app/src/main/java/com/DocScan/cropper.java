@@ -300,7 +300,7 @@ public class cropper extends DocumentScanActivity {
 
     @Override
     protected Bitmap getBitmapImage() {
-        return ScannerConstants.selectedImageBitmap;
+        return cropImage;
     }
 
     @Override
