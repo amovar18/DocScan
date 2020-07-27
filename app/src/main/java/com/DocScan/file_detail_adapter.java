@@ -121,7 +121,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                                     notifyDataSetChanged();
                                     break;
                                 case R.id.pdf_edit:
-                                    edit(position);
+                                    edit(position,dataset.get(position));
                                     break;
                                 case R.id.pdf_open:
                                     Intent intent=new Intent(Intent.ACTION_VIEW);
@@ -186,10 +186,16 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         System.out.println(dataset.size());
         return dataset.size();
     }
-    public void edit(int position) {
+    public void edit(int position,String folder_name) {
         try {
-            createDirectory();
-            ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(new File(Environment.getExternalStorageDirectory() + "/DocScan/" + dataset.get(position)), ParcelFileDescriptor.MODE_READ_ONLY);
+            File file=new File(Environment.getExternalStorageDirectory() + "/DocScan/" + dataset.get(position));
+            folder_name=folder_name.substring(0,(folder_name.indexOf(".")));
+            File image_directory = new File(context.getExternalFilesDir(null) + "/Pictures/" + folder_name);
+            if (!image_directory.exists()) {
+                image_directory.mkdirs();
+            }
+            object.setImage_Path(image_directory.getAbsolutePath(),folder_name);
+            ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
             PdfRenderer renderer = new PdfRenderer(parcelFileDescriptor);
             Bitmap bitmap;
             ByteArrayOutputStream byteArrayOutputStream;
@@ -212,15 +218,5 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         }
         Intent intent=new Intent(context,captured_image_display.class);
         context.startActivity(intent);
-    }
-    public void createDirectory() {
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String folder_name = simpleDateFormat.format(c);
-        File file = new File(context.getExternalFilesDir(null) + "/Pictures/" + folder_name);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        object.setImage_Path(file.getAbsolutePath(),folder_name);
     }
 }
