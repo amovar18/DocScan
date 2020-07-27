@@ -48,6 +48,7 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public imageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());

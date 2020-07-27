@@ -20,4 +20,5 @@
     <string name="main_image_display">Main Image Display</string>
     <string name="proceed">Proceed</string>
     <string name="theme">Dark Theme</string>
+    <string name="select_pdf_size">Select PDF size:</string>
 </resources>
