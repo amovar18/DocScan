@@ -9,14 +9,11 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -26,10 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapter.fileViewHolder> {
     private ArrayList<String> dataset;
@@ -57,12 +51,6 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
         dataset.add(position, item);
         notifyItemInserted(position);
     }
-
-    public void remove(int position) {
-        dataset.remove(position);
-        notifyItemRemoved(position);
-    }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public file_detail_adapter(ArrayList<String> passedDataset, Context context) {
         dataset = passedDataset;
@@ -102,80 +90,76 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
             holder.filethumbnail_imageview.setImageBitmap(bitmap);
             holder.filename_textview.setText(dataset.get(position));
         }
-        holder.menu_imageview.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(dataset.get(position).contains(".")){
-                    PopupMenu popupMenu=new PopupMenu(context,holder.menu_imageview);
-                    popupMenu.getMenuInflater().inflate(R.menu.icon_menu_pdf_file,popupMenu.getMenu());
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            switch(menuItem.getItemId()){
-                                case R.id.pdf_delete:
-                                    File file=new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position));
-                                    if(file.exists()){
-                                        file.delete();
-                                        dataset.remove(position);
-                                    }
-                                    notifyDataSetChanged();
-                                    break;
-                                case R.id.pdf_edit:
-                                    edit(position,dataset.get(position));
-                                    break;
-                                case R.id.pdf_open:
-                                    Intent intent=new Intent(Intent.ACTION_VIEW);
-                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    Uri path= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
-                                    intent.setDataAndType(path, "application/pdf");
-                                    context.startActivity(intent);
-                                    break;
-                                case R.id.pdf_share:
-                                    Intent shareintent=new Intent(Intent.ACTION_SEND);
-                                    Uri sharepath= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
-                                    shareintent.setDataAndType(sharepath, "application/pdf");
-                                    context.startActivity(Intent.createChooser(shareintent,"Select Mode of Sharing:"));
-                                    break;
+        holder.menu_imageview.setOnClickListener(view -> {
+            if(dataset.get(position).contains(".")){
+                PopupMenu popupMenu=new PopupMenu(context,holder.menu_imageview);
+                popupMenu.getMenuInflater().inflate(R.menu.icon_menu_pdf_file,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                    switch(menuItem.getItemId()){
+                        case R.id.pdf_delete:
+                            File file=new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position));
+                            if(file.exists()){
+                                file.delete();
+                                dataset.remove(position);
                             }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                }else{
-                    PopupMenu popupMenu=new PopupMenu(context,holder.menu_imageview);
-                    popupMenu.getMenuInflater().inflate(R.menu.icon_menu_image_directory,popupMenu.getMenu());
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            switch(menuItem.getItemId()){
-                                case R.id.image_directory_delete:
-                                    File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
-                                    File[] temp_files=file.listFiles();
-                                    for(File delete_file : temp_files){
-                                        delete_file.delete();
-                                    }
-                                    if(file.exists()){
-                                        file.delete();
-                                        dataset.remove(position);
-                                    }
-                                    notifyDataSetChanged();
-                                    break;
-                                case R.id.image_directory_edit:
-                                    File image_directory_file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
-                                    File[] list_files=image_directory_file.listFiles();
-                                    for (File names:list_files){
-                                        object.setFilename(names.getName());
-                                    }
-                                    object.setImage_Path(image_directory_file.getAbsolutePath(),dataset.get(position));
-                                    Intent intent=new Intent(context,captured_image_display.class);
-                                    context.startActivity(intent);
-                                    break;
+                            notifyDataSetChanged();
+                            break;
+                        case R.id.pdf_edit:
+                            edit(position,dataset.get(position));
+                            break;
+                        case R.id.pdf_open:
+                            Intent intent=new Intent(Intent.ACTION_VIEW);
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            Uri path= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
+                            intent.setDataAndType(path, "application/pdf");
+                            context.startActivity(intent);
+                            break;
+                        case R.id.pdf_share:
+                            Intent shareintent=new Intent(Intent.ACTION_SEND);
+                            shareintent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            Uri sharepath= FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID+".provider",new File(Environment.getExternalStorageDirectory()+"/DocScan/"+dataset.get(position)));
+                            shareintent.putExtra(Intent.EXTRA_STREAM,sharepath);
+                            shareintent.setDataAndType(sharepath, "application/pdf");
+                            Intent chooser=Intent.createChooser(shareintent,"Select Mode of Sharing:");
+                            context.startActivity(chooser);
+                            break;
+                    }
+                    return false;
+                });
+                popupMenu.show();
+            }else{
+                PopupMenu popupMenu=new PopupMenu(context,holder.menu_imageview);
+                popupMenu.getMenuInflater().inflate(R.menu.icon_menu_image_directory,popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                    switch(menuItem.getItemId()){
+                        case R.id.image_directory_delete:
+                            File file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
+                            File[] temp_files=file.listFiles();
+                            assert temp_files != null;
+                            for(File delete_file : temp_files){
+                                delete_file.delete();
                             }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                }
+                            if(file.exists()){
+                                file.delete();
+                                dataset.remove(position);
+                            }
+                            notifyDataSetChanged();
+                            break;
+                        case R.id.image_directory_edit:
+                            File image_directory_file=new File(context.getExternalFilesDir(null)+"/Pictures/"+dataset.get(position));
+                            File[] list_files=image_directory_file.listFiles();
+                            assert list_files != null;
+                            for (File names:list_files){
+                                object.setFilename(names.getName());
+                            }
+                            object.setImage_Path(image_directory_file.getAbsolutePath(),dataset.get(position));
+                            Intent intent=new Intent(context,captured_image_display.class);
+                            context.startActivity(intent);
+                            break;
+                    }
+                    return false;
+                });
+                popupMenu.show();
             }
         });
     }
@@ -183,7 +167,6 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        System.out.println(dataset.size());
         return dataset.size();
     }
     public void edit(int position,String folder_name) {

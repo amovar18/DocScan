@@ -3,12 +3,12 @@ package com.DocScan;
 import java.util.ArrayList;
 
 public class datastore {
-    private static ArrayList<String> filenames=new ArrayList<String>();
+    private static ArrayList<String> filenames= new ArrayList<>();
     private static String image_path= "";
     private static String image_directory_name="";
     private static boolean is_path_set=false;
     public void setImage_Path(String path,String folder){
-        this.image_path=path;
+        image_path=path;
         is_path_set=true;
         image_directory_name=folder;
     }
@@ -24,9 +24,6 @@ public class datastore {
 
     public String getImage_path() {
         return image_path;
-    }
-    public void swapdata(){
-
     }
     public void clear_all_data(){
         filenames.clear();

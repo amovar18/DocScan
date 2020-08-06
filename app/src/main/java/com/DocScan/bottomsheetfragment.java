@@ -18,6 +18,7 @@ public class bottomsheetfragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.bottomsheet_for_ocr_text, container, false);
         text_display=view.findViewById(R.id.display_extracted_text);
+        assert getArguments() != null;
         text_display.setText(getArguments().getString("extracted_text"));
         return view;
     }

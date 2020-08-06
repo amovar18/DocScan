@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.DocScan.R;
 import com.DocScan.libraries.NativeClass;
@@ -110,11 +111,11 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
 
             int padding = (int) getResources().getDimension(R.dimen.scanPadding);
 
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(tempBitmap.getWidth() + 2 * padding, tempBitmap.getHeight() + 2 * padding);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(tempBitmap.getWidth() + 2*padding, tempBitmap.getHeight() + 2* padding);
             layoutParams.gravity = Gravity.CENTER;
 
             getPolygonView().setLayoutParams(layoutParams);
-            getPolygonView().setPointColor(getResources().getColor(R.color.blue));
+            getPolygonView().setPointColor(ContextCompat.getColor(getApplicationContext(),R.color.blue));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,9 +144,9 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
         }
     }
 
-    protected Bitmap scaledBitmap(Bitmap bitmap, int width, int height) {
+    protected Bitmap scaledBitmap(Bitmap bitmap, float width, float height) {
         Matrix m = new Matrix();
-        m.setRectToRect(new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight()), new RectF(0, 0, width, height), Matrix.ScaleToFit.FILL);
+        m.setRectToRect(new RectF(0, 0, (float) bitmap.getWidth(), (float) bitmap.getHeight()), new RectF(0, 0, width, height), Matrix.ScaleToFit.FILL);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     }
 

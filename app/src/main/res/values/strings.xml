@@ -21,4 +21,6 @@
     <string name="proceed">Proceed</string>
     <string name="theme">Dark Theme</string>
     <string name="select_pdf_size">Select PDF size:</string>
+    <string name="menu">Menu</string>
+    <string name="thumbnail">Thumbnail</string>
 </resources>

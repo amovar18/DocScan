@@ -37,7 +37,6 @@ import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowMetrics;
 import android.widget.ImageView;
@@ -78,7 +77,6 @@ public class image_capture extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-    boolean taken_image=false;
     private boolean isTorchOn=false;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -94,51 +92,37 @@ public class image_capture extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_capture);
-        textureView = (TextureView) findViewById(R.id.textureView);
+        textureView =findViewById(R.id.textureView);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         ImageView takePictureButton = findViewById(R.id.shoot_photo);
         assert takePictureButton != null;
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+        takePictureButton.setOnClickListener(v -> takePicture());
         ImageView pick_from_Gallery = findViewById(R.id.select_image_from_gallery);
-        pick_from_Gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createDirectory();
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-            }
+        pick_from_Gallery.setOnClickListener(view -> {
+            createDirectory();
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
         });
         flash = findViewById(R.id.flash);
-        flash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isTorchOn) {
-                    flash.setImageResource(R.drawable.do_flash_on);
-                    isTorchOn=false;
-                } else {
-                    flash.setImageResource(R.drawable.do_flash_off);
-                    isTorchOn=true;
-                }
+        flash.setOnClickListener(view -> {
+            if (isTorchOn) {
+                flash.setImageResource(R.drawable.do_flash_on);
+                isTorchOn=false;
+            } else {
+                flash.setImageResource(R.drawable.do_flash_off);
+                isTorchOn=true;
             }
         });
         proceedtonext= findViewById(R.id.done_capturing);
         proceedtonext.setBackgroundColor(ContextCompat.getColor(this,R.color.colorGrey));
         proceedtonext.setEnabled(false);
-        proceedtonext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent =new Intent(image_capture.this,captured_image_display.class);
-                startActivity(intent);
-            }
+        proceedtonext.setOnClickListener(view -> {
+            Intent intent =new Intent(image_capture.this,captured_image_display.class);
+            startActivity(intent);
         });
     }
 
@@ -224,14 +208,13 @@ public class image_capture extends AppCompatActivity {
             width = final_imageSize.getWidth();
             height = final_imageSize.getHeight();
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
-            List<Surface> outputSurfaces = new ArrayList<Surface>(2);
+            List<Surface> outputSurfaces = new ArrayList<>(2);
             outputSurfaces.add(reader.getSurface());
             outputSurfaces.add(new Surface(textureView.getSurfaceTexture()));
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             //flash
-            Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             if (isTorchOn) {
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
             } else {
@@ -284,14 +267,14 @@ public class image_capture extends AppCompatActivity {
             reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
             final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
                 @Override
-                public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     createCameraPreview();
                 }
             };
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
-                public void onConfigured(CameraCaptureSession session) {
+                public void onConfigured(@NonNull CameraCaptureSession session) {
                     try {
                         session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
                     } catch (CameraAccessException e) {
@@ -300,7 +283,7 @@ public class image_capture extends AppCompatActivity {
                 }
 
                 @Override
-                public void onConfigureFailed(CameraCaptureSession session) {
+                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
@@ -407,7 +390,7 @@ public class image_capture extends AppCompatActivity {
         if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.R){
             rotation=getWindowManager().getDefaultDisplay().getRotation();
         }else{
-            rotation=this.getDisplay().getRotation();
+            rotation= Objects.requireNonNull(this.getDisplay()).getRotation();
         }
         return rotation;
     }
@@ -504,12 +487,9 @@ public class image_capture extends AppCompatActivity {
 
             realImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             Bitmap finalRealImage = realImage;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    proceedtonext.setEnabled(true);
-                    proceedtonext.setImageBitmap(finalRealImage);
-                }
+            runOnUiThread(() -> {
+                proceedtonext.setEnabled(true);
+                proceedtonext.setImageBitmap(finalRealImage);
             });
 
 

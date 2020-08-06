@@ -1,6 +1,5 @@
 package com.DocScan;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,11 +30,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -45,12 +42,8 @@ public class captured_image_display extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
     BitmapFactory.Options options=new BitmapFactory.Options();
     private datastore ds=new datastore();
-    private RecyclerView recyclerView;
-    private Toolbar toolbar;
-    private double[] file_sizes= new double[2];
     private RecyclerView.Adapter adapter;
     private ProgressBar progressBar;
-    private Button start_saving;
     private EditText filename;
     protected CompositeDisposable disposable = new CompositeDisposable();
     private ArrayList<String> dataSet=ds.getAllData();
@@ -59,26 +52,23 @@ public class captured_image_display extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captured_image_display);
         filename=findViewById(R.id.filename_to_be_set);
-        recyclerView=findViewById(R.id.image_displayer);
+        RecyclerView recyclerView = findViewById(R.id.image_displayer);
         adapter=new captured_image_adapter(dataSet,captured_image_display.this);
         recyclerView.setAdapter(adapter);
         ItemTouchHelper ith = new ItemTouchHelper(itemCallback);
         ith.attachToRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        toolbar=findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         floatingActionButton=findViewById(R.id.add_more_images);
-        start_saving=findViewById(R.id.save_pdf_action);
+        Button start_saving = findViewById(R.id.save_pdf_action);
         start_saving.setOnClickListener(save_pdf);
         filename.setText(ds.getFolder());
         progressBar=findViewById(R.id.progress_circular);
         progressBar.setVisibility(View.GONE);
         floatingActionButton.bringToFront();
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(captured_image_display.this,image_capture.class);
-                startActivity(intent);
-            }
+        floatingActionButton.setOnClickListener(view -> {
+            Intent intent=new Intent(captured_image_display.this,image_capture.class);
+            startActivity(intent);
         });
     }
 
@@ -102,47 +92,40 @@ public class captured_image_display extends AppCompatActivity {
                     ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
         }
     };
-    private View.OnClickListener save_pdf=new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            double[] size=get_size_file();
-            LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.select_pdf_size, null);
+    private View.OnClickListener save_pdf= view -> {
+        view.getContext();
+        LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.select_pdf_size, null);
 
-            //Specify the length and width through constants
-            int width = LinearLayout.LayoutParams.MATCH_PARENT;
-            int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        //Specify the length and width through constants
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
-            //Make Inactive Items Outside Of PopupWindow
-            boolean focusable = true;
+        //Make Inactive Items Outside Of PopupWindow
+        boolean focusable = true;
 
-            //Create a window with our parameters
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        //Create a window with our parameters
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-            //Set the location of the window on the screen
-            popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        //Set the location of the window on the screen
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
-            //Initialize the elements of our window, install the handler
+        //Initialize the elements of our window, install the handler
 
-            TextView size_original = popupView.findViewById(R.id.original_size);
-            TextView size_reduced = popupView.findViewById(R.id.reduced_size);
-            String original = "Original size ("+size[0]+" MB).";
-            String reduced = "Compressed size ("+size[1]+" MB).";
-            size_original.setText(original);
-            size_reduced.setText(reduced);
-            size_original.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    save_to_pdf(100);
-                }
-            });
-            size_reduced.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    save_to_pdf(50);
-                }
-            });
-        }
+        TextView size_original = popupView.findViewById(R.id.original_size);
+        TextView size_reduced = popupView.findViewById(R.id.reduced_size);
+        String original = "Original size.";
+        String reduced = "Compressed size (50%).";
+        size_original.setText(original);
+        size_reduced.setText(reduced);
+        size_original.setOnClickListener(view1 -> {
+                popupWindow.dismiss();
+                save_to_pdf(1.0f);
+        });
+        size_reduced.setOnClickListener(view12 ->{
+            popupWindow.dismiss();
+            save_to_pdf(0.5f);
+        });
     };
 
     @Override
@@ -151,19 +134,14 @@ public class captured_image_display extends AppCompatActivity {
         floatingActionButton.bringToFront();
         adapter.notifyDataSetChanged();
     }
-    public void save_to_pdf(int compressionRatio) {
+    public void save_to_pdf(float Factor) {
         if(filename.getText().toString().isEmpty()){
             filename.setError("Enter PDF NAME!!!");
         }else if(ds.getSize()<=0){
             AlertDialog.Builder builder=new AlertDialog.Builder(getApplicationContext());
             builder.setTitle("Oops no image to save:");
             builder.setMessage("You cannot save pdf without any images:");
-            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
+            builder.setNeutralButton("OK", (dialogInterface, i) -> dialogInterface.cancel());
             builder.show();
         }else{
             options.inMutable=true;
@@ -174,13 +152,11 @@ public class captured_image_display extends AppCompatActivity {
             final_filename=final_filename+".pdf";
             PdfDocument.PageInfo pageInfo;
             PdfDocument document = new PdfDocument();
-            ByteArrayOutputStream byteArrayOutputStream;
             Bitmap final_bitmap;
             for(int i=0;i<ds.getSize();i++){
-                byteArrayOutputStream=new ByteArrayOutputStream();
                 Bitmap bitmap= BitmapFactory.decodeFile(new File(ds.getImage_path()+"/"+ds.getFilename(i)).toString(),options);
-                bitmap.compress(Bitmap.CompressFormat.JPEG,compressionRatio,byteArrayOutputStream);
-                pageInfo=new PdfDocument.PageInfo.Builder(bitmap.getWidth(),bitmap.getHeight(),(i+1)).create();
+                final_bitmap=Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*Factor),(int)(bitmap.getWidth()*Factor),false);
+                pageInfo=new PdfDocument.PageInfo.Builder(final_bitmap.getWidth(),final_bitmap.getHeight(),(i+1)).create();
                 PdfDocument.Page page = document.startPage(pageInfo);
                 Canvas canvas = page.getCanvas();
 
@@ -189,7 +165,6 @@ public class captured_image_display extends AppCompatActivity {
                 canvas.drawPaint(paint);
 
                 paint.setColor(Color.BLUE);
-                final_bitmap=BitmapFactory.decodeByteArray(byteArrayOutputStream.toByteArray(),0,byteArrayOutputStream.toByteArray().length);
                 canvas.drawBitmap(final_bitmap, 0, 0 , null);
 
                 document.finishPage(page);
@@ -198,6 +173,7 @@ public class captured_image_display extends AppCompatActivity {
             }
             try {
                 document.writeTo(new FileOutputStream(Environment.getExternalStorageDirectory()+"/DocScan/"+final_filename));
+                document.close();
             }catch (IOException e){
                 e.printStackTrace();
             }
@@ -218,24 +194,5 @@ public class captured_image_display extends AppCompatActivity {
             disposable.dispose();
             finish();
         }
-    }
-    public double[] get_size_file(){
-        options.inMutable=true;
-        double original_pdf_size=0.0,reduced_pdf_size=0.0;
-        int reduced_size=0,original_size=0;
-        for(int i=0;i<ds.getSize();i++) {
-            Bitmap bitmap = BitmapFactory.decodeFile(new File(ds.getImage_path() + "/" + ds.getFilename(i)).toString(),options);
-            bitmap.reconfigure(bitmap.getWidth(),bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            original_size=original_size+bitmap.getAllocationByteCount();
-            bitmap.reconfigure(bitmap.getWidth(),bitmap.getHeight(), Bitmap.Config.RGB_565);
-            reduced_size=reduced_size+bitmap.getAllocationByteCount();
-            bitmap.recycle();
-        }
-        original_pdf_size=original_size/(1024*1024);
-        reduced_pdf_size=reduced_size/(1024*1024*2);
-        double[] sizes=new double[2];
-        sizes[0]=original_pdf_size;
-        sizes[1]=reduced_pdf_size;
-        return sizes;
     }
 }

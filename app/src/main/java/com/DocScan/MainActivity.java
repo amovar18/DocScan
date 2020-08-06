@@ -3,17 +3,10 @@ package com.DocScan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 for (File listing : temp_files) {
                     File file=new File(getExternalFilesDir(null)+"/Pictures/"+listing.getName());
                     File[] temp_file=file.listFiles();
+                    assert temp_file != null;
                     if(temp_file.length<=0){
                         file.delete();
                     }else {
@@ -69,12 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(MainActivity.this,image_capture.class);
-                startActivity(intent);
-            }
+        floatingActionButton.setOnClickListener(view -> {
+            Intent intent= new Intent(MainActivity.this,image_capture.class);
+            startActivity(intent);
         });
         adapter=new file_detail_adapter(fileset,MainActivity.this);
         recyclerView.setAdapter(adapter);
@@ -99,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             for (File listing : temp_files) {
                 File file=new File(getExternalFilesDir(null)+"/Pictures/"+listing.getName());
                 File[] temp_file=file.listFiles();
+                assert temp_file != null;
                 if(temp_file.length<=0){
                     file.delete();
                 }else {

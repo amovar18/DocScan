@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/cardviewBackgroundcolor"
-    android:background="@color/cardview_dark_background"
     android:layout_marginTop="1dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -12,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+            android:contentDescription="@string/thumbnail"
             android:layout_marginStart="3dp"
             android:scaleType="centerCrop"
             android:cropToPadding="true"
@@ -22,6 +22,7 @@
             android:layout_height="100dp"
             android:id="@+id/thumbnail"/>
         <TextView
+            android:layout_toStartOf="@id/menu_for_file"
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/thumbnail"
             android:textColor="@color/textcolor"
@@ -35,6 +36,7 @@
             android:src="@drawable/ic_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/menu_for_file"/>
+            android:id="@+id/menu_for_file"
+            android:contentDescription="@string/menu" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

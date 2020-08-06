@@ -58,24 +58,18 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
     public void onBindViewHolder(@NonNull imageViewHolder holder, int position) {
         Bitmap display_bitmap= BitmapFactory.decodeFile(object.getImage_path()+"/"+object.getFilename(position));
         holder.main_ImageView.setImageBitmap(display_bitmap);
-        holder.delete_imageview.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                File file=new File(object.getImage_path()+"/"+object.getFilename(position));
-                if(file.exists()){
-                    file.delete();
-                    dataset.remove(position);
-                }
-                notifyDataSetChanged();
+        holder.delete_imageview.setOnClickListener(view -> {
+            File file=new File(object.getImage_path()+"/"+object.getFilename(position));
+            if(file.exists()){
+                file.delete();
+                dataset.remove(position);
             }
+            notifyDataSetChanged();
         });
-        holder.main_ImageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(context,cropper.class);
-                intent.putExtra("data",position);
-                context.startActivity(intent);
-            }
+        holder.main_ImageView.setOnClickListener(view -> {
+            Intent intent=new Intent(context,cropper.class);
+            intent.putExtra("data",position);
+            context.startActivity(intent);
         });
     }
 
