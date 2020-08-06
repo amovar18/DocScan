@@ -81,10 +81,15 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
     protected void startCropping() {
         selectedImage = getBitmapImage();
         setProgressBar(true);
-        disposable.add(Observable.fromCallable(() -> false)
+        disposable.add(
+                Observable.fromCallable(() -> {
+                    setImageRotation();
+                    return false;
+                })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((result) -> {
+                            hideProgressBar();
                             initializeCropping();
                             setProgressBar(false);
                         })
