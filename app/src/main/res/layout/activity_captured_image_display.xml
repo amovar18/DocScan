@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filename"/>
         <EditText
+            android:autofillHints="@string/enter_filename"
             android:inputType="text"
             android:hint="@string/enter_filename"
             android:textColorHint="@color/textcolor"
@@ -37,11 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Button
-            android:background="@color/save_pdf_color"
+            android:background="@color/colorPrimaryDark"
             android:textColor="@color/save_pdf_color_text"
-            android:fontFamily="@font/roboto_slab_bold"
+            android:fontFamily="@font/roboto_slab"
             android:layout_weight="1"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save_pdf"
@@ -63,7 +64,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/add_more_images"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="#42A5F5"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_add"/>
 </RelativeLayout>

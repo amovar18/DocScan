@@ -83,6 +83,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="8">
                 <FrameLayout
+                    android:layout_margin="10dp"
                     android:id="@+id/holderImageCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -114,7 +115,7 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center">
                 <Button
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/buttontextcolor"
                     android:background="@color/colorPrimaryDark"
                     android:layout_toEndOf="@id/btnScanText"
                     android:id="@+id/btnImageCrop"
@@ -123,7 +124,7 @@
                     android:layout_alignParentEnd="true"
                     android:text="@string/crop"/>
                 <Button
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/buttontextcolor"
                     android:background="@color/colorPrimaryDark"
                     android:layout_toStartOf="@id/btnScanText"
                     android:id="@+id/btnDone"
@@ -134,7 +135,7 @@
                 <Button
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/buttontextcolor"
                     android:background="@color/colorPrimaryDark"
                     android:id="@+id/btnScanText"
                     android:layout_width="wrap_content"

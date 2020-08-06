@@ -5,6 +5,7 @@
     app:cardBackgroundColor="@color/cardviewBackgroundcolor"
     android:layout_marginTop="1dp"
     android:layout_width="match_parent"
+    app:cardElevation="10dp"
     android:layout_height="wrap_content"
     android:id="@+id/file_detail">
     <RelativeLayout

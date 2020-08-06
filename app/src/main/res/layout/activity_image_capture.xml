@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#000000"
+    android:background="@color/backgroundColor"
     android:layout_height="match_parent"
     tools:context=".image_capture">
     <LinearLayout
@@ -34,12 +34,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
+                    android:contentDescription="@string/shoot_image"
                     android:src="@drawable/ic_shutter"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/shoot_photo"/>
                 <ImageView
+                    android:contentDescription="@string/pick_from_gallery"
                     android:src="@drawable/ic_gallery"
                     android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
@@ -47,6 +49,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/select_image_from_gallery"/>
                 <ImageView
+                    android:contentDescription="@string/flash_setting"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/do_flash_on"
                     android:layout_centerVertical="true"
@@ -59,21 +62,24 @@
                     android:layout_alignParentEnd="true"
                     android:id="@+id/next_holder"
                     android:layout_centerVertical="true"
-                    android:layout_width="50dp"
-                    android:layout_height="100dp">
+                    android:layout_width="75dp"
+                    android:layout_height="130dp">
+
                     <ImageView
+                        android:contentDescription="@string/thumbnail"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="5dp"
-                        android:padding="5dp"
-                        android:layout_width="50dp"
-                        android:layout_height="100dp"
+                        android:layout_width="75dp"
+                        android:layout_height="130dp"
                         android:id="@+id/done_capturing" />
+
                     <ImageView
+                        android:contentDescription="@string/done"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_baseline_navigate_next_24" />
+
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>

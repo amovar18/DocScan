@@ -23,4 +23,7 @@
     <string name="select_pdf_size">Select PDF size:</string>
     <string name="menu">Menu</string>
     <string name="thumbnail">Thumbnail</string>
+    <string name="shoot_image">Shoot Image</string>
+    <string name="pick_from_gallery">Pick from Gallery</string>
+    <string name="flash_setting">Flash Setting</string>
 </resources>

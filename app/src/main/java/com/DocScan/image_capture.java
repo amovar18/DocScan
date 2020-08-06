@@ -118,7 +118,7 @@ public class image_capture extends AppCompatActivity {
             }
         });
         proceedtonext= findViewById(R.id.done_capturing);
-        proceedtonext.setBackgroundColor(ContextCompat.getColor(this,R.color.colorGrey));
+        proceedtonext.setBackgroundColor(ContextCompat.getColor(this,R.color.cardviewBackgroundcolor));
         proceedtonext.setEnabled(false);
         proceedtonext.setOnClickListener(view -> {
             Intent intent =new Intent(image_capture.this,captured_image_display.class);

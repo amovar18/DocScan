@@ -84,7 +84,6 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
         setProgressBar(true);
         disposable.add(
                 Observable.fromCallable(() -> {
-                    setImageRotation();
                     return false;
                 })
                         .subscribeOn(Schedulers.io())

@@ -21,7 +21,7 @@
         android:src="@drawable/ic_camera"
         android:id="@+id/start_capturing"
         android:layout_margin="10dp"
-        android:backgroundTint="#03A9F4"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"/>
 </RelativeLayout>

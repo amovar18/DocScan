@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
     <androidx.appcompat.widget.Toolbar
         app:title="@string/app_name"
+        app:titleTextColor="@color/textcolor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/actionBar"
