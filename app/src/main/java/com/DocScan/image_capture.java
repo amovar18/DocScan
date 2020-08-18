@@ -495,7 +495,6 @@ public class image_capture extends AppCompatActivity {
 
 
             fos.close();
-            Toast.makeText(this, "Image Captured", Toast.LENGTH_SHORT).show();
 
         } catch (IOException e) {
             e.printStackTrace();

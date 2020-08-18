@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/coordinator"
     android:background="@color/backgroundColor"
     tools:context=".MainActivity">
-    <include android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="5dp"
-        android:scrollbars="vertical"
-        android:layout_below="@id/toolbar_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/files_details_holder"/>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_camera"
-        android:id="@+id/start_capturing"
-        android:layout_margin="10dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"/>
-</RelativeLayout>
+        android:layout_height="match_parent">
+        <include android:id="@+id/toolbar_layout"
+            layout="@layout/toolbar"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="5dp"
+            android:scrollbars="vertical"
+            android:layout_below="@id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/files_details_holder"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_camera"
+            android:id="@+id/start_capturing"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

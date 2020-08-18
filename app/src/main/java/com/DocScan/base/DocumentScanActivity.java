@@ -143,10 +143,8 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
         }
     }
 
-    protected Bitmap scaledBitmap(Bitmap bitmap, float width, float height) {
-        Matrix m = new Matrix();
-        m.setRectToRect(new RectF(0, 0, (float) bitmap.getWidth(), (float) bitmap.getHeight()), new RectF(0, 0, width, height), Matrix.ScaleToFit.FILL);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    protected Bitmap scaledBitmap(Bitmap bitmap, int width, int height) {
+        return Bitmap.createScaledBitmap(bitmap, width, height,false);
     }
 
     private Map<Integer, PointF> getEdgePoints(Bitmap tempBitmap) throws Exception {

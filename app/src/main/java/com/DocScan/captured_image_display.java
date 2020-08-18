@@ -124,7 +124,7 @@ public class captured_image_display extends AppCompatActivity {
         });
         size_reduced.setOnClickListener(view12 ->{
             popupWindow.dismiss();
-            save_to_pdf(0.5f);
+            save_to_pdf(0.7f);
         });
     };
 
