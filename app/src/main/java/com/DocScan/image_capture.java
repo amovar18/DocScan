@@ -100,7 +100,9 @@ public class image_capture extends AppCompatActivity {
         takePictureButton.setOnClickListener(v -> takePicture());
         ImageView pick_from_Gallery = findViewById(R.id.select_image_from_gallery);
         pick_from_Gallery.setOnClickListener(view -> {
-            createDirectory();
+            if (!data.has_path_set()) {
+                createDirectory();
+            }
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -158,11 +160,13 @@ public class image_capture extends AppCompatActivity {
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
             cameraDevice.close();
+            closeCamera();
         }
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
             cameraDevice.close();
+            closeCamera();
             cameraDevice = null;
         }
     };
@@ -516,48 +520,50 @@ public class image_capture extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent datas) {
         super.onActivityResult(requestCode, resultCode, datas);
         if (requestCode == PICK_IMAGE) {
-            assert datas != null;
-            if (datas.getClipData() != null) {
-                ClipData clipData = datas.getClipData();
-                ByteArrayOutputStream byteArrayOutputStream;
-                FileOutputStream fos;
-                Bitmap bitmap = null;
-                for (int i = 0; i < clipData.getItemCount(); i++) {
-                    String file_name_selected = (i + 1) + ".jpeg";
-                    Uri selectedImage = clipData.getItemAt(i).getUri();//As of now use static position 0 use as per itemcount.
-                    byteArrayOutputStream=new ByteArrayOutputStream();
+            if(datas!=null){
+                if (datas.getClipData() != null) {
+                    ClipData clipData = datas.getClipData();
+                    ByteArrayOutputStream byteArrayOutputStream;
+                    FileOutputStream fos;
+                    Bitmap bitmap = null;
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        String file_name_selected = (i + 1) + ".jpeg";
+                        Uri selectedImage = clipData.getItemAt(i).getUri();//As of now use static position 0 use as per itemcount.
+                        byteArrayOutputStream=new ByteArrayOutputStream();
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                            fos = new FileOutputStream(data.getImage_path() + "/" + file_name_selected);
+                            data.setFilename(file_name_selected);
+                            fos.write(byteArrayOutputStream.toByteArray());
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                        fos = new FileOutputStream(data.getImage_path() + "/" + file_name_selected);
+                        Date c = Calendar.getInstance().getTime();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+                        String file_name_selected = "IMG_" + simpleDateFormat.format(c) + ".jpeg";
+                        final Uri imageUri = datas.getData();
+                        final InputStream imageStream;
+                        assert imageUri != null;
+                        imageStream = getContentResolver().openInputStream(imageUri);
+                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        FileOutputStream fos = new FileOutputStream(data.getImage_path() + "/" + file_name_selected);
+                        data.setFilename(file_name_selected);
                         fos.write(byteArrayOutputStream.toByteArray());
                         fos.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            } else {
-                try {
-                    Date c = Calendar.getInstance().getTime();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
-                    String file_name_selected = "IMG_" + simpleDateFormat.format(c) + ".jpeg";
-                    final Uri imageUri = datas.getData();
-                    final InputStream imageStream;
-                    assert imageUri != null;
-                    imageStream = getContentResolver().openInputStream(imageUri);
-                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                    FileOutputStream fos = new FileOutputStream(data.getImage_path() + "/" + file_name_selected);
-                    data.setFilename(file_name_selected);
-                    fos.write(byteArrayOutputStream.toByteArray());
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Intent intent=new Intent(image_capture.this,captured_image_display.class);
+                startActivity(intent);
             }
-            Intent intent=new Intent(image_capture.this,captured_image_display.class);
-            startActivity(intent);
         }
     }
 }

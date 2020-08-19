@@ -40,4 +40,5 @@ public class datastore {
     public ArrayList<String> getAllData(){
         return filenames;
     }
+
 }

@@ -95,27 +95,29 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
 
 
     private void initializeCropping() {
-        Bitmap scaledBitmap = scaledBitmap(selectedImage, getHolderImageCrop().getWidth(), getHolderImageCrop().getHeight());
-        getImageView().setImageBitmap(scaledBitmap);
+        getHolderImageCrop().post(() -> {
+            Bitmap scaledBitmap = scaledBitmap(selectedImage, getHolderImageCrop().getWidth(), getHolderImageCrop().getHeight());
+            getImageView().setImageBitmap(scaledBitmap);
 
-        Bitmap tempBitmap = ((BitmapDrawable) getImageView().getDrawable()).getBitmap();
-        Map<Integer, PointF> pointFs = null;
-        try {
-            pointFs = getEdgePoints(tempBitmap);
-            getPolygonView().setPoints(pointFs);
-            getPolygonView().setVisibility(View.VISIBLE);
+            Bitmap tempBitmap = ((BitmapDrawable) getImageView().getDrawable()).getBitmap();
+            Map<Integer, PointF> pointFs = null;
+            try {
+                pointFs = getEdgePoints(tempBitmap);
+                getPolygonView().setPoints(pointFs);
+                getPolygonView().setVisibility(View.VISIBLE);
 
-            int padding = (int) getResources().getDimension(R.dimen.scanPadding);
+                int padding = (int) getResources().getDimension(R.dimen.scanPadding);
 
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(tempBitmap.getWidth() + 2*padding, tempBitmap.getHeight() + 2* padding);
-            layoutParams.gravity = Gravity.CENTER;
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(tempBitmap.getWidth() + 2*padding, tempBitmap.getHeight() + 2* padding);
+                layoutParams.gravity = Gravity.CENTER;
 
-            getPolygonView().setLayoutParams(layoutParams);
-            getPolygonView().setPointColor(ContextCompat.getColor(getApplicationContext(),R.color.blue));
+                getPolygonView().setLayoutParams(layoutParams);
+                getPolygonView().setPointColor(ContextCompat.getColor(getApplicationContext(),R.color.blue));
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     protected Bitmap getCroppedImage() {
