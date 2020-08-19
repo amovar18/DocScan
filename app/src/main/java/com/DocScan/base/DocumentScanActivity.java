@@ -4,7 +4,6 @@ package com.DocScan.base;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.View;
@@ -83,16 +82,14 @@ public abstract class DocumentScanActivity extends AppCompatActivity {
         selectedImage = getBitmapImage();
         setProgressBar(true);
         disposable.add(
-                Observable.fromCallable(() -> {
-                    return false;
-                })
+                Observable.fromCallable(() -> false)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((result) -> {
+                        .subscribe(result -> {
                             hideProgressBar();
                             initializeCropping();
                             setProgressBar(false);
-                        })
+                        }, Throwable::printStackTrace)
         );
     }
 
