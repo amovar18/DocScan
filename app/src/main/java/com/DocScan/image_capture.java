@@ -124,6 +124,7 @@ public class image_capture extends AppCompatActivity {
         proceedtonext.setEnabled(false);
         proceedtonext.setOnClickListener(view -> {
             Intent intent =new Intent(image_capture.this,captured_image_display.class);
+            finish();
             startActivity(intent);
         });
     }
