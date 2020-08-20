@@ -9,7 +9,7 @@ android {
         applicationId "com.DocScan"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 7
+        versionCode 9
         versionName "3.5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

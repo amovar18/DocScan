@@ -58,8 +58,8 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -87,7 +87,7 @@ public class image_capture extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
-
+    private CaptureRequest captureRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,21 +160,13 @@ public class image_capture extends AppCompatActivity {
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
             cameraDevice.close();
-            closeCamera();
+            cameraDevice=null;
         }
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
             cameraDevice.close();
-            closeCamera();
-            cameraDevice = null;
-        }
-    };
-    final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-            super.onCaptureCompleted(session, request, result);
-            createCameraPreview();
+            cameraDevice=null;
         }
     };
 
@@ -206,6 +198,7 @@ public class image_capture extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = Objects.requireNonNull(characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)).getOutputSizes(ImageFormat.JPEG);
             }
+            //height and width of the output
             int width = 640;
             int height = 480;
             Size final_imageSize = getImagesize(jpegSizes);
@@ -218,12 +211,14 @@ public class image_capture extends AppCompatActivity {
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+
             //flash
             if (isTorchOn) {
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
             } else {
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
             }
+
             // Orientation
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(getrotation()));
             if (!data.has_path_set()) {
@@ -281,7 +276,7 @@ public class image_capture extends AppCompatActivity {
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     try {
                         session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
+                    } catch (CameraAccessException | IllegalStateException e) {
                         e.printStackTrace();
                     }
                 }
@@ -303,7 +298,7 @@ public class image_capture extends AppCompatActivity {
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
+            cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
                     //The camera is already closed
@@ -311,15 +306,21 @@ public class image_capture extends AppCompatActivity {
                         return;
                     }
                     // When the session is ready, we start displaying the preview.
-                    cameraCaptureSessions = cameraCaptureSession;
-                    updatePreview();
+                    try{
+                        captureRequest=captureRequestBuilder.build();
+                        cameraCaptureSessions = cameraCaptureSession;
+                        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+                        cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     Toast.makeText(image_capture.this, "Configuration change", Toast.LENGTH_SHORT).show();
                 }
-            }, null);
+            },mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -338,28 +339,19 @@ public class image_capture extends AppCompatActivity {
                 ActivityCompat.requestPermissions(image_capture.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
                 return;
             }
-            manager.openCamera(cameraId, stateCallback, null);
+            manager.openCamera(cameraId, stateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
-
-    protected void updatePreview() {
-        if (null == cameraDevice) {
-            return;
-        }
-        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-        try {
-            cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void closeCamera() {
         if (null != cameraDevice) {
             cameraDevice.close();
             cameraDevice = null;
+        }
+        if(null!= cameraCaptureSessions){
+            cameraCaptureSessions.close();
+            cameraCaptureSessions=null;
         }
         if (null != imageReader) {
             imageReader.close();
@@ -388,6 +380,13 @@ public class image_capture extends AppCompatActivity {
             textureView.setSurfaceTextureListener(textureListener);
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        closeCamera();
+    }
+
     @TargetApi(Build.VERSION_CODES.R)
     public int getrotation(){
         int rotation;
@@ -400,9 +399,9 @@ public class image_capture extends AppCompatActivity {
     }
     @Override
     protected void onPause() {
+        super.onPause();
         closeCamera();
         stopBackgroundThread();
-        super.onPause();
     }
     @TargetApi(Build.VERSION_CODES.Q)
     public Size above_30(){
@@ -561,6 +560,7 @@ public class image_capture extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                closeCamera();
                 Intent intent=new Intent(image_capture.this,captured_image_display.class);
                 startActivity(intent);
             }
