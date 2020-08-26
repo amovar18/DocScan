@@ -125,6 +125,7 @@ public class image_capture extends AppCompatActivity {
         proceedtonext.setOnClickListener(view -> {
             Intent intent =new Intent(image_capture.this,captured_image_display.class);
             startActivity(intent);
+            finish();
         });
     }
 
@@ -385,6 +386,17 @@ public class image_capture extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         closeCamera();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        startBackgroundThread();
+        if (textureView.isAvailable()) {
+            openCamera();
+        } else {
+            textureView.setSurfaceTextureListener(textureListener);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.R)
