@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -55,8 +57,7 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
 
     @Override
     public void onBindViewHolder(@NonNull imageViewHolder holder, int position) {
-        Bitmap display_bitmap= BitmapFactory.decodeFile(object.getImage_path()+"/"+object.getFilename(position));
-        holder.main_ImageView.setImageBitmap(display_bitmap);
+        Glide.with(context).load(new File(object.getImage_path()+"/"+object.getFilename(position))).into(holder.main_ImageView);
         holder.delete_imageview.setOnClickListener(view -> {
             File file=new File(object.getImage_path()+"/"+object.getFilename(position));
             if(file.exists()){

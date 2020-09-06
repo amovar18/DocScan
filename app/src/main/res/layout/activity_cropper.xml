@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:weightSum="10">
+            android:weightSum="12">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -22,46 +22,28 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp">
                 <ImageView
-                    android:id="@+id/ivOriginal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:contentDescription="@string/original_image"
+                    android:id="@+id/image_edit"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_original"
-                    android:layout_centerVertical="true"/>
-                <ImageView
-                    android:id="@+id/ivBlackandWhite"
-                    android:layout_toStartOf="@id/ivInvert"
-                    android:layout_toEndOf="@id/ivOriginal"
-                    android:contentDescription="@string/black_and_white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_filter_b_and_w"
-                    android:layout_centerVertical="true" />
-                <ImageView
-                    android:contentDescription="@string/monochrome"
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/ivInvert"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_invert_colors"
-                    android:layout_centerVertical="true"/>
+                    android:src="@drawable/ic_filter"/>
                 <ImageView
                     android:id="@+id/ivRebase"
                     android:contentDescription="@string/realign"
-                    android:layout_toStartOf="@id/ivRotate"
-                    android:layout_toEndOf="@id/ivInvert"
+                    android:layout_toStartOf="@id/paint_brush"
+                    android:layout_toEndOf="@id/image_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:src="@drawable/ic_align"
+                    android:layout_centerVertical="true"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_brush"
+                    android:id="@+id/paint_brush"
+                    android:layout_centerInParent="true"
                     android:layout_centerVertical="true"/>
                 <ImageView
                     android:id="@+id/ivRotate"
@@ -69,28 +51,163 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
                     android:src="@drawable/ic_rotate"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@id/paint_brush"
+                    android:layout_toStartOf="@id/btnScanText"
                     android:layout_centerVertical="true" />
+                <ImageView
+                    android:id="@+id/btnScanText"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_ocr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
+            <HorizontalScrollView
+                android:visibility="invisible"
+                android:layout_weight="0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/horizontal_scroll_view">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/holder_for_horizontal_scroll">
+                    <LinearLayout
+                        android:visibility="invisible"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/image_editor_holder">
+                        <ImageView
+                            android:id="@+id/ivOriginal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:contentDescription="@string/original_image"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/ic_original" />
+                        <ImageView
+                            android:id="@+id/ivBlackandWhite"
+                            android:contentDescription="@string/black_and_white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/ic_filter_b_and_w"/>
+                        <ImageView
+                            android:contentDescription="@string/monochrome"
+                            android:id="@+id/ivInvert"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/ic_invert_colors" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:visibility="invisible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/color_palette">
+                        <ImageView
+                            android:id="@+id/black"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/black"/>
 
+                        <ImageView
+                            android:id="@+id/white"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/white"/>
+
+                        <ImageView
+                            android:id="@+id/yellow"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/yellow"/>
+                        <ImageView
+                            android:id="@+id/blue"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/blue"/>
+
+                        <ImageView
+                            android:id="@+id/red"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/red"/>
+
+                        <ImageView
+                            android:id="@+id/purple"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/purple"/>
+                        <ImageView
+                            android:id="@+id/orange"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/orange"/>
+                        <ImageView
+                            android:id="@+id/green"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/green"/>
+                        <ImageView
+                            android:id="@+id/erase"
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_eraser"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
             <FrameLayout
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
-                android:layout_weight="8">
+                android:layout_weight="10">
                 <FrameLayout
                     android:layout_margin="10dp"
                     android:id="@+id/holderImageCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageView
+                    <com.DocScan.DrawableImageView
                         android:id="@+id/imageView"
-                        android:scaleType="fitXY"
+                        android:scaleType="center"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -115,33 +232,21 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center">
                 <Button
-                    android:textColor="@color/buttontextcolor"
-                    android:background="@color/colorPrimaryDark"
-                    android:layout_toEndOf="@id/btnScanText"
-                    android:id="@+id/btnImageCrop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/btnImageCrop"
+                    android:textColor="@color/buttontextcolor"
+                    android:background="@color/colorPrimaryDark"
                     android:layout_alignParentEnd="true"
                     android:text="@string/crop"/>
                 <Button
-                    android:textColor="@color/buttontextcolor"
-                    android:background="@color/colorPrimaryDark"
-                    android:layout_toStartOf="@id/btnScanText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/btnDone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text="@string/done" />
-                <Button
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
                     android:textColor="@color/buttontextcolor"
                     android:background="@color/colorPrimaryDark"
-                    android:id="@+id/btnScanText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/extract_text"
-                    android:layout_centerHorizontal="true"/>
+                    android:text="@string/done" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>

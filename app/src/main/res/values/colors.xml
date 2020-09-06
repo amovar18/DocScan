@@ -23,4 +23,13 @@
     <color name="bottom_background_color">#ffc4c2bc</color>
     <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
     <color name="polygonViewCircleBackground">#90e5f8ff</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="yellow">#ffee00</color>
+    <color name="red">#ff0000</color>
+    <color name="blue_stroke">#4287f5</color>
+    <color name="orange_stroke">#ffa200</color>
+    <color name="green">#11ff00</color>
+    <color name="purple">#800080</color>
 </resources>

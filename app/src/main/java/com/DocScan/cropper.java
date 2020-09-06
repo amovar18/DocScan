@@ -3,6 +3,7 @@ package com.DocScan;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -45,9 +47,11 @@ public class cropper extends DocumentScanActivity {
     datastore data_object=new datastore();
     private FrameLayout holderImageCrop;
     private ProgressBar progressBar;
-    private Bitmap cropImage,originalImage;
+    private Bitmap cropImage,originalImage,bmp,alteredBitmap;
     private boolean isInverted=false;
-    private  ImageView imageView;
+    private HorizontalScrollView horizontalScrollView;
+    private LinearLayout holder,palette,image_editor;
+    private  DrawableImageView imageView;
     private  PolygonView polygonView;
     private BottomSheetBehavior sheetBehavior;
     private File file;
@@ -60,6 +64,12 @@ public class cropper extends DocumentScanActivity {
         ScannerConstants.selectedImageBitmap= BitmapFactory.decodeFile(file.toString());
         cropImage=ScannerConstants.selectedImageBitmap;
         originalImage=ScannerConstants.selectedImageBitmap;
+
+        //setting the image for imageview
+        alteredBitmap = Bitmap.createBitmap(cropImage.getWidth(),cropImage.getHeight(), cropImage.getConfig());
+
+
+        //setting bottomsheet for scanning text from image
         LinearLayout bottom_sheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -95,22 +105,43 @@ public class cropper extends DocumentScanActivity {
             Toast.makeText(this, ScannerConstants.imageError, Toast.LENGTH_LONG).show();
             finish();
         }
+
     }
     private void init(){
-        Button crop,done,extract;
-        ImageView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original;
+        Button crop,done;
+        ImageView ic_rotate,ic_monochrome, ic_black_and_white, ic_align, ic_original,extract,image_edit_holder,brush,erase;
+        ImageView black,white,purple,red,yellow,green,blue,orange;
+        horizontalScrollView=findViewById(R.id.horizontal_scroll_view);
+        holder=findViewById(R.id.holder_for_horizontal_scroll);
+        palette=findViewById(R.id.color_palette);
+        image_editor=findViewById(R.id.image_editor_holder);
         imageView=findViewById(R.id.imageView);
         holderImageCrop=findViewById(R.id.holderImageCrop);
         progressBar=findViewById(R.id.progressBar);
-        ic_align=findViewById(R.id.ivRebase);
-        ic_rotate=findViewById(R.id.ivRotate);
-        ic_monochrome=findViewById(R.id.ivInvert);
+        //Image filter holder and image filter icon
+        image_edit_holder=findViewById(R.id.image_edit);
         ic_black_and_white=findViewById(R.id.ivBlackandWhite);
         ic_original=findViewById(R.id.ivOriginal);
+        ic_monochrome=findViewById(R.id.ivInvert);
+        //Color brush and palette
+        erase=findViewById(R.id.erase);
+        brush=findViewById(R.id.paint_brush);
+        black=findViewById(R.id.black);
+        white=findViewById(R.id.white);
+        purple=findViewById(R.id.purple);
+        green=findViewById(R.id.green);
+        yellow=findViewById(R.id.yellow);
+        blue=findViewById(R.id.blue);
+        red=findViewById(R.id.red);
+        orange=findViewById(R.id.orange);
+        //Other icons
+        ic_align=findViewById(R.id.ivRebase);
+        ic_rotate=findViewById(R.id.ivRotate);
         polygonView=findViewById(R.id.polygonView);
         crop=findViewById(R.id.btnImageCrop);
         done=findViewById(R.id.btnDone);
         extract=findViewById(R.id.btnScanText);
+        //click listeners
         crop.setOnClickListener(startCroppingImage);
         extract.setOnClickListener(extractTextFromImage);
         done.setOnClickListener(setImageFinal);
@@ -119,18 +150,41 @@ public class cropper extends DocumentScanActivity {
         ic_monochrome.setOnClickListener(setMonochrome);
         ic_black_and_white.setOnClickListener(setBlackandwhite);
         ic_original.setOnClickListener(setOriginal);
+        black.setOnClickListener(setBlack);
+        blue.setOnClickListener(setBlue);
+        yellow.setOnClickListener(setYellow);
+        purple.setOnClickListener(setPurple);
+        green.setOnClickListener(setGreen);
+        orange.setOnClickListener(setOrange);
+        red.setOnClickListener(setRed);
+        white.setOnClickListener(setWhite);
+        image_edit_holder.setOnClickListener(select_filter);
+        brush.setOnClickListener(select_color);
+        erase.setOnClickListener(erasedrawing);
         startCropping();
     }
+    private View.OnClickListener erasedrawing=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            cropImage=originalImage;
+            imageView.startdrawing(alteredBitmap,cropImage);
+        }
+    };
     private View.OnClickListener setImageFinal =new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            horizontalScrollView.setVisibility(View.INVISIBLE);
+            holder.setVisibility(View.INVISIBLE);
+            palette.setVisibility(View.INVISIBLE);
+            image_editor.setVisibility(View.INVISIBLE);
+            imageView.stopdrawing();
             try {
                 ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
                 if(file.exists()){
                     file.delete();
                 }
-                cropImage.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+                alteredBitmap=imageView.getBitmap(imageView);
+                alteredBitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
                 FileOutputStream fos=new FileOutputStream(file);
                 fos.write(byteArrayOutputStream.toByteArray());
             } catch (IOException e) {
@@ -139,9 +193,36 @@ public class cropper extends DocumentScanActivity {
             finish();
         }
     };
+    private View.OnClickListener select_filter =new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.VISIBLE);
+            holder.setVisibility(View.VISIBLE);
+            image_editor.setVisibility(View.VISIBLE);
+            palette.setVisibility(View.GONE);
+            imageView.stopdrawing();
+        }
+    };
+    private View.OnClickListener select_color =new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.VISIBLE);
+            holder.setVisibility(View.VISIBLE);
+            palette.setVisibility(View.VISIBLE);
+            image_editor.setVisibility(View.GONE);
+
+            imageView.startdrawing(alteredBitmap,ScannerConstants.selectedImageBitmap);
+        }
+    };
     private View.OnClickListener startCroppingImage =new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.INVISIBLE);
+            holder.setVisibility(View.INVISIBLE);
+            palette.setVisibility(View.INVISIBLE);
+            image_editor.setVisibility(View.INVISIBLE);
+            imageView.stopdrawing();
+
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
@@ -165,6 +246,13 @@ public class cropper extends DocumentScanActivity {
     private View.OnClickListener extractTextFromImage=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.INVISIBLE);
+            holder.setVisibility(View.INVISIBLE);
+            palette.setVisibility(View.INVISIBLE);
+            image_editor.setVisibility(View.INVISIBLE);
+            imageView.stopdrawing();
+
+            cropImage=imageView.getBitmap(imageView);
             FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(cropImage);
             FirebaseVisionTextRecognizer textRecognizer = FirebaseVision.getInstance()
                     .getOnDeviceTextRecognizer();
@@ -184,6 +272,11 @@ public class cropper extends DocumentScanActivity {
     private View.OnClickListener realign=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.INVISIBLE);
+            holder.setVisibility(View.INVISIBLE);
+            palette.setVisibility(View.INVISIBLE);
+            image_editor.setVisibility(View.INVISIBLE);
+            imageView.stopdrawing();
             cropImage = ScannerConstants.selectedImageBitmap.copy(ScannerConstants.selectedImageBitmap.getConfig(), true);
             startCropping();
         }
@@ -194,6 +287,7 @@ public class cropper extends DocumentScanActivity {
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
+                        cropImage=imageView.getBitmap(imageView);
                         invertColor();
                         return false;
                     })
@@ -213,6 +307,7 @@ public class cropper extends DocumentScanActivity {
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
+                        cropImage=imageView.getBitmap(imageView);
                         cropImage=setGrayscale(cropImage);
                         isInverted = false;
                         return false;
@@ -229,6 +324,12 @@ public class cropper extends DocumentScanActivity {
     private View.OnClickListener rotateimage=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            horizontalScrollView.setVisibility(View.INVISIBLE);
+            holder.setVisibility(View.INVISIBLE);
+            palette.setVisibility(View.INVISIBLE);
+            image_editor.setVisibility(View.INVISIBLE);
+            imageView.stopdrawing();
+
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
@@ -318,5 +419,52 @@ public class cropper extends DocumentScanActivity {
         isInverted = true;
     }
 
-
+    private View.OnClickListener setBlack=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.BLACK);
+        }
+    };
+    private View.OnClickListener setBlue=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.BLUE);
+        }
+    };
+    private View.OnClickListener setWhite=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.WHITE);
+        }
+    };
+    private View.OnClickListener setYellow=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.YELLOW);
+        }
+    };
+    private View.OnClickListener setRed=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.RED);
+        }
+    };
+    private View.OnClickListener setOrange=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.parseColor("#ffa200"));
+        }
+    };
+    private View.OnClickListener setPurple=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.parseColor("#800080"));
+        }
+    };
+    private View.OnClickListener setGreen=new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setColor(Color.GREEN);
+        }
+    };
 }
