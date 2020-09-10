@@ -2,8 +2,6 @@ package com.DocScan;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class captured_image_adapter extends RecyclerView.Adapter<captured_image_
 
     @Override
     public void onBindViewHolder(@NonNull imageViewHolder holder, int position) {
-        Glide.with(context).load(new File(object.getImage_path()+"/"+object.getFilename(position))).into(holder.main_ImageView);
+        Glide.with(context).load(new File(object.getImage_path()+"/"+object.getFilename(position))).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(holder.main_ImageView);
         holder.delete_imageview.setOnClickListener(view -> {
             File file=new File(object.getImage_path()+"/"+object.getFilename(position));
             if(file.exists()){

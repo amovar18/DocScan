@@ -3,18 +3,11 @@ package com.DocScan;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-
-import com.DocScan.helpers.ScannerConstants;
 
 public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     //initial color
@@ -53,6 +46,7 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
         matrix = new Matrix();
         canvas.drawBitmap(bmp, matrix, paint);
         setImageBitmap(alteredBitmap);
+
         setOnTouchListener(this);
     }
     public void stopdrawing(){

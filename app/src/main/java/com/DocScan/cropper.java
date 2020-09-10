@@ -63,12 +63,6 @@ public class cropper extends DocumentScanActivity {
         file=new File(data_object.getImage_path()+"/"+data_object.getFilename(getIntent().getIntExtra("data",0)));
         ScannerConstants.selectedImageBitmap= BitmapFactory.decodeFile(file.toString());
         cropImage=ScannerConstants.selectedImageBitmap;
-        originalImage=ScannerConstants.selectedImageBitmap;
-
-        //setting the image for imageview
-        alteredBitmap = Bitmap.createBitmap(cropImage.getWidth(),cropImage.getHeight(), cropImage.getConfig());
-
-
         //setting bottomsheet for scanning text from image
         LinearLayout bottom_sheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
@@ -99,9 +93,19 @@ public class cropper extends DocumentScanActivity {
             }
         });
         isInverted=false;
-        if (ScannerConstants.selectedImageBitmap != null)
+        if (ScannerConstants.selectedImageBitmap != null) {
             init();
-        else {
+            imageView.setImageBitmap(cropImage);
+            holderImageCrop.post(new Runnable() {
+                @Override
+                public void run() {
+                    cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+                    ScannerConstants.selectedImageBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+                    originalImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+                    alteredBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+                }
+            });
+        }else {
             Toast.makeText(this, ScannerConstants.imageError, Toast.LENGTH_LONG).show();
             finish();
         }
@@ -115,8 +119,8 @@ public class cropper extends DocumentScanActivity {
         holder=findViewById(R.id.holder_for_horizontal_scroll);
         palette=findViewById(R.id.color_palette);
         image_editor=findViewById(R.id.image_editor_holder);
-        imageView=findViewById(R.id.imageView);
         holderImageCrop=findViewById(R.id.holderImageCrop);
+        imageView=findViewById(R.id.imageView);
         progressBar=findViewById(R.id.progressBar);
         //Image filter holder and image filter icon
         image_edit_holder=findViewById(R.id.image_edit);
@@ -211,7 +215,7 @@ public class cropper extends DocumentScanActivity {
             palette.setVisibility(View.VISIBLE);
             image_editor.setVisibility(View.GONE);
 
-            imageView.startdrawing(alteredBitmap,ScannerConstants.selectedImageBitmap);
+            imageView.startdrawing(alteredBitmap,cropImage);
         }
     };
     private View.OnClickListener startCroppingImage =new View.OnClickListener() {
@@ -235,6 +239,7 @@ public class cropper extends DocumentScanActivity {
                                 hideProgressBar();
                                 if (cropImage != null) {
                                     startCropping();
+                                    cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
                                     imageView.setImageBitmap(cropImage);
                                     ScannerConstants.selectedImageBitmap = cropImage;
                                     originalImage=cropImage;
@@ -295,8 +300,8 @@ public class cropper extends DocumentScanActivity {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((result) -> {
                                 hideProgressBar();
-                                Bitmap scaledBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                                imageView.setImageBitmap(scaledBitmap);
+                                cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+                                imageView.setImageBitmap(cropImage);
                             })
             );
         }
@@ -307,7 +312,6 @@ public class cropper extends DocumentScanActivity {
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
-                        cropImage=imageView.getBitmap(imageView);
                         cropImage=setGrayscale(cropImage);
                         isInverted = false;
                         return false;
@@ -316,6 +320,8 @@ public class cropper extends DocumentScanActivity {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((result) -> {
                                 hideProgressBar();
+                                startCropping();
+                                cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
                                 imageView.setImageBitmap(cropImage);
                             })
             );
@@ -354,6 +360,7 @@ public class cropper extends DocumentScanActivity {
     private void setoriginalImage() {
         cropImage=originalImage.copy(originalImage.getConfig(),true);
         ScannerConstants.selectedImageBitmap=originalImage.copy(originalImage.getConfig(),true);
+        //Bitmap scaledBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
         imageView.setImageBitmap(cropImage);
         isInverted = false;
     }
