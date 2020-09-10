@@ -46,7 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class cropper extends DocumentScanActivity{
+public class cropper extends DocumentScanActivity {
     datastore data_object=new datastore();
     private FrameLayout holderImageCrop;
     private ProgressBar progressBar;
@@ -57,7 +57,6 @@ public class cropper extends DocumentScanActivity{
     private  DrawableImageView imageView;
     private  PolygonView polygonView;
     private BottomSheetBehavior sheetBehavior;
-    private Spinner stroke_type_spinner,storke_width_spinner;
     private File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +66,10 @@ public class cropper extends DocumentScanActivity{
         file=new File(data_object.getImage_path()+"/"+data_object.getFilename(getIntent().getIntExtra("data",0)));
         ScannerConstants.selectedImageBitmap= BitmapFactory.decodeFile(file.toString());
         cropImage=ScannerConstants.selectedImageBitmap;
+        originalImage=ScannerConstants.selectedImageBitmap;
+
+
+
         //setting bottomsheet for scanning text from image
         LinearLayout bottom_sheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
@@ -97,19 +100,9 @@ public class cropper extends DocumentScanActivity{
             }
         });
         isInverted=false;
-        if (ScannerConstants.selectedImageBitmap != null) {
+        if (ScannerConstants.selectedImageBitmap != null)
             init();
-            imageView.setImageBitmap(cropImage);
-            holderImageCrop.post(new Runnable() {
-                @Override
-                public void run() {
-                    cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                    ScannerConstants.selectedImageBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                    originalImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                    alteredBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
-                }
-            });
-        }else {
+        else {
             Toast.makeText(this, ScannerConstants.imageError, Toast.LENGTH_LONG).show();
             finish();
         }
@@ -123,8 +116,8 @@ public class cropper extends DocumentScanActivity{
         holder=findViewById(R.id.holder_for_horizontal_scroll);
         palette=findViewById(R.id.color_palette);
         image_editor=findViewById(R.id.image_editor_holder);
-        holderImageCrop=findViewById(R.id.holderImageCrop);
         imageView=findViewById(R.id.imageView);
+        holderImageCrop=findViewById(R.id.holderImageCrop);
         progressBar=findViewById(R.id.progressBar);
         //Image filter holder and image filter icon
         image_edit_holder=findViewById(R.id.image_edit);
@@ -132,8 +125,6 @@ public class cropper extends DocumentScanActivity{
         ic_original=findViewById(R.id.ivOriginal);
         ic_monochrome=findViewById(R.id.ivInvert);
         //Color brush and palette
-        stroke_type_spinner = findViewById(R.id.stroketype);
-        storke_width_spinner=findViewById(R.id.strokewidth);
         erase=findViewById(R.id.erase);
         brush=findViewById(R.id.paint_brush);
         black=findViewById(R.id.black);
@@ -144,6 +135,17 @@ public class cropper extends DocumentScanActivity{
         blue=findViewById(R.id.blue);
         red=findViewById(R.id.red);
         orange=findViewById(R.id.orange);
+        //Color brush and palette
+        Spinner stroke_type_spinner = findViewById(R.id.stroketype);
+        Spinner storke_width_spinner = findViewById(R.id.strokewidth);
+
+        //Other icons
+        ic_align=findViewById(R.id.ivRebase);
+        ic_rotate=findViewById(R.id.ivRotate);
+        polygonView=findViewById(R.id.polygonView);
+        crop=findViewById(R.id.btnImageCrop);
+        done=findViewById(R.id.btnDone);
+        extract=findViewById(R.id.btnScanText);
         //set spinners
         ArrayAdapter<CharSequence> adapter_stroke_type = ArrayAdapter.createFromResource(this, R.array.stroke_type_array, android.R.layout.simple_spinner_item);
         adapter_stroke_type.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -153,13 +155,6 @@ public class cropper extends DocumentScanActivity{
         ArrayAdapter<CharSequence> adapter_stroke_width = ArrayAdapter.createFromResource(this, R.array.stroke_width_array, android.R.layout.simple_spinner_item);
         adapter_stroke_width.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         storke_width_spinner.setAdapter(adapter_stroke_width);
-        //Other icons
-        ic_align=findViewById(R.id.ivRebase);
-        ic_rotate=findViewById(R.id.ivRotate);
-        polygonView=findViewById(R.id.polygonView);
-        crop=findViewById(R.id.btnImageCrop);
-        done=findViewById(R.id.btnDone);
-        extract=findViewById(R.id.btnScanText);
         //spinner listener
         stroke_type_spinner.setOnItemSelectedListener(checkitem);
         storke_width_spinner.setOnItemSelectedListener(select_width);
@@ -189,14 +184,19 @@ public class cropper extends DocumentScanActivity{
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             String data=adapterView.getItemAtPosition(i).toString();
-            if (data.equals("5")){
-                imageView.stroke(5);
-            }else if(data.equals("10")){
-                imageView.stroke(10);
-            }else if(data.equals("15")){
-                imageView.stroke(15);
-            }else if(data.equals("20")){
-                imageView.stroke(20);
+            switch (data) {
+                case "5":
+                    imageView.stroke(5);
+                    break;
+                case "10":
+                    imageView.stroke(10);
+                    break;
+                case "15":
+                    imageView.stroke(15);
+                    break;
+                case "20":
+                    imageView.stroke(20);
+                    break;
             }
         }
 
@@ -269,6 +269,8 @@ public class cropper extends DocumentScanActivity{
             palette.setVisibility(View.VISIBLE);
             image_editor.setVisibility(View.GONE);
 
+            //setting the image for imageview
+            alteredBitmap = Bitmap.createBitmap(cropImage.getWidth(),cropImage.getHeight(), cropImage.getConfig());
             imageView.startdrawing(alteredBitmap,cropImage);
         }
     };
@@ -293,7 +295,6 @@ public class cropper extends DocumentScanActivity{
                                 hideProgressBar();
                                 if (cropImage != null) {
                                     startCropping();
-                                    cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
                                     imageView.setImageBitmap(cropImage);
                                     ScannerConstants.selectedImageBitmap = cropImage;
                                     originalImage=cropImage;
@@ -336,6 +337,7 @@ public class cropper extends DocumentScanActivity{
             palette.setVisibility(View.INVISIBLE);
             image_editor.setVisibility(View.INVISIBLE);
             imageView.stopdrawing();
+
             cropImage = ScannerConstants.selectedImageBitmap.copy(ScannerConstants.selectedImageBitmap.getConfig(), true);
             startCropping();
         }
@@ -354,7 +356,6 @@ public class cropper extends DocumentScanActivity{
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((result) -> {
                                 hideProgressBar();
-                                cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
                                 imageView.setImageBitmap(cropImage);
                             })
             );
@@ -366,6 +367,7 @@ public class cropper extends DocumentScanActivity{
             showProgressBar();
             disposable.add(
                     Observable.fromCallable(() -> {
+                        cropImage=imageView.getBitmap(imageView);
                         cropImage=setGrayscale(cropImage);
                         isInverted = false;
                         return false;
@@ -374,8 +376,6 @@ public class cropper extends DocumentScanActivity{
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((result) -> {
                                 hideProgressBar();
-                                startCropping();
-                                cropImage = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
                                 imageView.setImageBitmap(cropImage);
                             })
             );
@@ -401,6 +401,8 @@ public class cropper extends DocumentScanActivity{
                             .subscribe((result) -> {
                                 hideProgressBar();
                                 startCropping();
+                                originalImage=cropImage;
+                                ScannerConstants.selectedImageBitmap=cropImage;
                             })
             );
         }
@@ -414,8 +416,9 @@ public class cropper extends DocumentScanActivity{
     private void setoriginalImage() {
         cropImage=originalImage.copy(originalImage.getConfig(),true);
         ScannerConstants.selectedImageBitmap=originalImage.copy(originalImage.getConfig(),true);
-        //Bitmap scaledBitmap = scaledBitmap(cropImage, holderImageCrop.getWidth(), holderImageCrop.getHeight());
+        startCropping();
         imageView.setImageBitmap(cropImage);
+
         isInverted = false;
     }
 

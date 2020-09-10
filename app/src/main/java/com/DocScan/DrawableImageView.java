@@ -18,7 +18,8 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
     private float downy = 0;
     private float upx = 0;
     private float upy = 0;
-
+    private int alpha=255;
+    private float stroke=5;
     private Canvas canvas;
     private Paint paint;
     private Matrix matrix;
@@ -43,7 +44,8 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
         canvas = new Canvas(alteredBitmap );
         paint = new Paint();
         paint.setColor(paintColor);
-        paint.setStrokeWidth(5);
+        paint.setAlpha(alpha);
+        paint.setStrokeWidth(stroke);
         matrix = new Matrix();
         canvas.drawBitmap(bmp, matrix, paint);
         setImageBitmap(alteredBitmap);
@@ -105,8 +107,12 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
     public void setColor(int color){
         paint.setColor(color);
     }
-    public void opacity(int x){
+    public void opacity(int x) {
+        alpha=x;
         paint.setAlpha(x);
     }
-    public void stroke(int x){paint.setStrokeWidth(x);}
+    public void stroke(int x){
+        stroke=x;
+        paint.setStrokeWidth(x);
+    }
 }
