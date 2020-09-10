@@ -3,6 +3,7 @@ package com.DocScan;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -11,7 +12,7 @@ import android.view.View;
 
 public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     //initial color
-    private int paintColor = 0xFF660000;
+    private int paintColor = Color.BLACK;
     //canvas
     private float downx = 0;
     private float downy = 0;
@@ -102,6 +103,10 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
         return bitmap;
     }
     public void setColor(int color){
-        paintColor=color;
+        paint.setColor(color);
     }
+    public void opacity(int x){
+        paint.setAlpha(x);
+    }
+    public void stroke(int x){paint.setStrokeWidth(x);}
 }

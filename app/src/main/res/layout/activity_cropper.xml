@@ -114,6 +114,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/color_palette">
+                        <Spinner
+                            android:padding="5dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:overlapAnchor="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/stroketype"/>
+                        <Spinner
+                            android:padding="5dp"
+                            android:overlapAnchor="false"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/strokewidth"/>
                         <ImageView
                             android:id="@+id/black"
                             android:padding="5dp"

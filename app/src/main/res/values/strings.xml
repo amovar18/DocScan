@@ -26,4 +26,18 @@
     <string name="shoot_image">Shoot Image</string>
     <string name="pick_from_gallery">Pick from Gallery</string>
     <string name="flash_setting">Flash Setting</string>
+    
+    <!-- Array for spinner item-->
+    <string-array name="stroke_type_array">
+        <item name="select_stroke_type">Select Stroke Type</item>
+        <item name="pen">Pen</item>
+        <item name="highlight">Highlight</item>
+    </string-array>
+    <string-array name="stroke_width_array">
+        <item name="select_stroke_type">Select Brush Width</item>
+        <item name="5">5</item>
+        <item name="10">10</item>
+        <item name="15">15</item>
+        <item name="20">20</item>
+    </string-array>
 </resources>

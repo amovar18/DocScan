@@ -10,12 +10,15 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,7 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class cropper extends DocumentScanActivity {
+public class cropper extends DocumentScanActivity{
     datastore data_object=new datastore();
     private FrameLayout holderImageCrop;
     private ProgressBar progressBar;
@@ -54,6 +57,7 @@ public class cropper extends DocumentScanActivity {
     private  DrawableImageView imageView;
     private  PolygonView polygonView;
     private BottomSheetBehavior sheetBehavior;
+    private Spinner stroke_type_spinner,storke_width_spinner;
     private File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +132,8 @@ public class cropper extends DocumentScanActivity {
         ic_original=findViewById(R.id.ivOriginal);
         ic_monochrome=findViewById(R.id.ivInvert);
         //Color brush and palette
+        stroke_type_spinner = findViewById(R.id.stroketype);
+        storke_width_spinner=findViewById(R.id.strokewidth);
         erase=findViewById(R.id.erase);
         brush=findViewById(R.id.paint_brush);
         black=findViewById(R.id.black);
@@ -138,6 +144,15 @@ public class cropper extends DocumentScanActivity {
         blue=findViewById(R.id.blue);
         red=findViewById(R.id.red);
         orange=findViewById(R.id.orange);
+        //set spinners
+        ArrayAdapter<CharSequence> adapter_stroke_type = ArrayAdapter.createFromResource(this, R.array.stroke_type_array, android.R.layout.simple_spinner_item);
+        adapter_stroke_type.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stroke_type_spinner.setAdapter(adapter_stroke_type);
+
+
+        ArrayAdapter<CharSequence> adapter_stroke_width = ArrayAdapter.createFromResource(this, R.array.stroke_width_array, android.R.layout.simple_spinner_item);
+        adapter_stroke_width.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        storke_width_spinner.setAdapter(adapter_stroke_width);
         //Other icons
         ic_align=findViewById(R.id.ivRebase);
         ic_rotate=findViewById(R.id.ivRotate);
@@ -145,6 +160,9 @@ public class cropper extends DocumentScanActivity {
         crop=findViewById(R.id.btnImageCrop);
         done=findViewById(R.id.btnDone);
         extract=findViewById(R.id.btnScanText);
+        //spinner listener
+        stroke_type_spinner.setOnItemSelectedListener(checkitem);
+        storke_width_spinner.setOnItemSelectedListener(select_width);
         //click listeners
         crop.setOnClickListener(startCroppingImage);
         extract.setOnClickListener(extractTextFromImage);
@@ -167,6 +185,42 @@ public class cropper extends DocumentScanActivity {
         erase.setOnClickListener(erasedrawing);
         startCropping();
     }
+    private AdapterView.OnItemSelectedListener select_width=new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            String data=adapterView.getItemAtPosition(i).toString();
+            if (data.equals("5")){
+                imageView.stroke(5);
+            }else if(data.equals("10")){
+                imageView.stroke(10);
+            }else if(data.equals("15")){
+                imageView.stroke(15);
+            }else if(data.equals("20")){
+                imageView.stroke(20);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+    private AdapterView.OnItemSelectedListener checkitem=new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            String data=adapterView.getItemAtPosition(i).toString();
+            if (data.equals("Highlight")){
+                imageView.opacity(128);
+            }else if(data.equals("Pen")){
+                imageView.opacity(255);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
     private View.OnClickListener erasedrawing=new View.OnClickListener() {
         @Override
         public void onClick(View view) {
