@@ -26,7 +26,10 @@
     <string name="shoot_image">Shoot Image</string>
     <string name="pick_from_gallery">Pick from Gallery</string>
     <string name="flash_setting">Flash Setting</string>
-    
+    <string name="original_size">Original Size</string>
+    <string name="compressed_size">Compressed size (50%).</string>
+    <string name="please_wait_saing_pdf">Please Wait Saing PDF.</string>
+
     <!-- Array for spinner item-->
     <string-array name="stroke_type_array">
         <item name="select_stroke_type">Select Stroke Type</item>

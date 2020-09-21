@@ -17,13 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,42 +37,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import io.reactivex.disposables.CompositeDisposable;
 
 public class captured_image_display extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
     BitmapFactory.Options options=new BitmapFactory.Options();
     private datastore ds=new datastore();
     private RecyclerView.Adapter adapter;
-    private ProgressBar progressBar;
     private EditText filename;
-    protected CompositeDisposable disposable = new CompositeDisposable();
     private ArrayList<String> dataSet=ds.getAllData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captured_image_display);
-        filename=findViewById(R.id.filename_to_be_set);
+        filename = findViewById(R.id.filename_to_be_set);
         RecyclerView recyclerView = findViewById(R.id.image_displayer);
-        adapter=new captured_image_adapter(dataSet,captured_image_display.this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        floatingActionButton = findViewById(R.id.add_more_images);
+        Button start_saving = findViewById(R.id.save_pdf_action);
+        adapter = new captured_image_adapter(dataSet, captured_image_display.this);
         recyclerView.setAdapter(adapter);
         ItemTouchHelper ith = new ItemTouchHelper(itemCallback);
         ith.attachToRecyclerView(recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        floatingActionButton=findViewById(R.id.add_more_images);
-        Button start_saving = findViewById(R.id.save_pdf_action);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         start_saving.setOnClickListener(save_pdf);
         filename.setText(ds.getFolder());
-        progressBar=findViewById(R.id.progress_circular);
-        progressBar.setVisibility(View.GONE);
-        floatingActionButton.bringToFront();
         floatingActionButton.setOnClickListener(view -> {
-            Intent intent=new Intent(captured_image_display.this,image_capture.class);
+            Intent intent = new Intent(captured_image_display.this, image_capture.class);
             startActivity(intent);
         });
     }
-
     ItemTouchHelper.Callback itemCallback = new ItemTouchHelper.Callback() {
         public boolean onMove(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             // get the viewHolder's and target's positions in your adapter data, swap them
@@ -123,17 +117,23 @@ public class captured_image_display extends AppCompatActivity {
 
             TextView size_original = popupView.findViewById(R.id.original_size);
             TextView size_reduced = popupView.findViewById(R.id.reduced_size);
-            String original = "Original size.";
-            String reduced = "Compressed size (50%).";
-            size_original.setText(original);
-            size_reduced.setText(reduced);
             size_original.setOnClickListener(view1 -> {
                 popupWindow.dismiss();
-                save_to_pdf(1.0f);
+                Toast.makeText(captured_image_display.this,"Please wait PDF is being saved.",Toast.LENGTH_SHORT).show();
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                save_to_pdf(1.0);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                Intent intent=new Intent(captured_image_display.this,MainActivity.class);
+                startActivity(intent);
+                finish();
             });
             size_reduced.setOnClickListener(view12 -> {
                 popupWindow.dismiss();
-                save_to_pdf(0.7f);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                save_to_pdf(0.9);
+                Intent intent=new Intent(captured_image_display.this,MainActivity.class);
+                startActivity(intent);
+                finish();
             });
         }
     };
@@ -144,21 +144,19 @@ public class captured_image_display extends AppCompatActivity {
         floatingActionButton.bringToFront();
         adapter.notifyDataSetChanged();
     }
-    public void save_to_pdf(float Factor) {
-
-        options.inMutable=true;
-        progressBar.setVisibility(View.VISIBLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        String to_be_processed_filename=filename.getText().toString();
-        String final_filename=to_be_processed_filename.replaceAll("[\\s\\W+]","_");
-        final_filename=final_filename+".pdf";
+    public synchronized void save_to_pdf(double Factor) {
+        //start pdf saving process
+        options.inMutable = true;
+        String to_be_processed_filename = filename.getText().toString();
+        String final_filename = to_be_processed_filename.replaceAll("[\\s\\W+]", "_");
+        final_filename = final_filename + ".pdf";
         PdfDocument.PageInfo pageInfo;
         PdfDocument document = new PdfDocument();
         Bitmap final_bitmap;
-        for(int i=0;i<ds.getSize();i++){
-            Bitmap bitmap= BitmapFactory.decodeFile(new File(ds.getImage_path()+"/"+ds.getFilename(i)).toString(),options);
-            final_bitmap=Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*Factor),(int)(bitmap.getWidth()*Factor),false);
-            pageInfo=new PdfDocument.PageInfo.Builder(final_bitmap.getWidth(),final_bitmap.getHeight(),(i+1)).create();
+        for (int i = 0; i < ds.getSize(); i++) {
+            Bitmap bitmap = BitmapFactory.decodeFile(new File(ds.getImage_path() + "/" + ds.getFilename(i)).toString(), options);
+            final_bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() * Factor), (int) (bitmap.getWidth() * Factor), false);
+            pageInfo = new PdfDocument.PageInfo.Builder(final_bitmap.getWidth(), final_bitmap.getHeight(), (i + 1)).create();
             PdfDocument.Page page = document.startPage(pageInfo);
             Canvas canvas = page.getCanvas();
 
@@ -167,34 +165,27 @@ public class captured_image_display extends AppCompatActivity {
             canvas.drawPaint(paint);
 
             paint.setColor(Color.BLUE);
-            canvas.drawBitmap(final_bitmap, 0, 0 , null);
-
+            canvas.drawBitmap(final_bitmap, 0, 0, null);
             document.finishPage(page);
             final_bitmap.recycle();
 
         }
         try {
-            document.writeTo(new FileOutputStream(Environment.getExternalStorageDirectory()+"/DocScan/"+final_filename));
+            document.writeTo(new FileOutputStream(Environment.getExternalStorageDirectory() + "/DocScan/" + final_filename));
             document.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        File file=new File(ds.getImage_path()+"/");
-        File[] temp_files=file.listFiles();
-        assert temp_files != null;
-        for(File delete_file : temp_files){
-            delete_file.delete();
+        File file = new File(ds.getImage_path() + "/");
+        File[] temp_files = file.listFiles();
+        if(temp_files!=null){
+            for(File delete_file : temp_files) {
+                delete_file.delete();
+            }
+            if (file.exists()) {
+                file.delete();
+            }
         }
-        if(file.exists()){
-            file.delete();
-        }
-        Intent intent=new Intent(captured_image_display.this,MainActivity.class);
-        progressBar.setVisibility(View.GONE);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         ds.clear_all_data();
-        startActivity(intent);
-        disposable.dispose();
-        finish();
-
     }
 }

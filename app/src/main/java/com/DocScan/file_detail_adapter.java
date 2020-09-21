@@ -79,6 +79,7 @@ public class file_detail_adapter extends RecyclerView.Adapter<file_detail_adapte
                 bitmap=Bitmap.createBitmap(page.getWidth(),page.getHeight(), Bitmap.Config.ARGB_8888);
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                 page.close();
+                bitmap=bitmap.copy(Bitmap.Config.RGB_565,false);
                 holder.filethumbnail_imageview.setImageBitmap(bitmap);
                 holder.filename_textview.setText(dataset.get(position));
             } catch (IOException e) {
